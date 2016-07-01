@@ -10,6 +10,8 @@ class PlaneTests : public QObject
     Q_OBJECT
     private slots:
         void testInitPlane();
+        void testGetSet();
+        void testInvalid();
 };
 
 
