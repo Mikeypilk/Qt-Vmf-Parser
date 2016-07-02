@@ -1,6 +1,6 @@
 #include "brush.h"
 //!
-//! \brief Plane::Plane Contruct a plane with 3 vertex
+//! \brief Plane  :      break;:Plane Contruct a plane with 3 vertex
 //! \param bot_left - Defines the bottom left vertex
 //! \param top_left - Defines the top left vertex
 //! \param top_right - Defines the top right vertex
@@ -384,5 +384,138 @@ QVector2D Brush::getBottomRight(axis primary, axis secondary) {
         }
     }
     return vec;
+}
+void Brush::transform(boundingBox corner, axis primary, axis secondary, QPointF newpos) {
+
+    QVector2D coords;
+    switch (corner) {
+    case  BOUND_BOX__TOP_LEFT:
+        coords = getTopLeft(primary, secondary);
+        break;
+    case  BOUND_BOX__TOP_RIGHT:
+        coords = getTopRight(primary, secondary);
+        break;
+    case  BOUND_BOX__BOTTOM_RIGHT:
+        coords = getBottomRight(primary, secondary);
+        break;
+    case  BOUND_BOX__BOTTOM_LEFT:
+        coords = getBottomLeft(primary, secondary);
+        break;
+    case  BOUND_BOX__LEFT:
+        break;
+    case  BOUND_BOX__RIGHT:
+        break;
+    case  BOUND_BOX__BOTTOM:
+        break;
+    case  BOUND_BOX__TOP:
+        break;
+    default  :
+        break;
+    }
+    matchingVertexes(primary,secondary,coords);
+    QVector3D *vec;
+    switch (primary) {
+    case X_AXIS:
+        foreach(vec, xMatch) {
+            vec->setX(newpos.x());
+        }
+        break;
+    case Y_AXIS:
+        foreach(vec, yMatch) {
+            vec->setY(newpos.x());
+        }
+        break;
+    case Z_AXIS:
+        foreach(vec, zMatch) {
+            vec->setZ(newpos.x());
+        }
+        break;
+    default:
+        break;
+    }
+    switch (secondary) {
+    case X_AXIS:
+        foreach(vec, xMatch) {
+            vec->setX(newpos.y());
+        }
+        break;
+    case Y_AXIS:
+        foreach(vec, yMatch) {
+            vec->setY(newpos.y());
+        }
+        break;
+    case Z_AXIS:
+        foreach(vec, zMatch) {
+            vec->setZ(newpos.y());
+        }
+        break;
+    default:
+        break;
+    }
+
+}
+void  Brush::matchingVertexes(axis primary, axis secondary, QVector2D checkpos) {
+    Plane *pla;
+    axis thisAxis = X_AXIS;
+    xMatch.clear();
+    yMatch.clear();
+    zMatch.clear();
+    for(int i=0; i<2; i++) {
+        qreal val;
+        if (0==i)
+            thisAxis = primary;
+        if (1==i)
+            thisAxis = secondary;
+        switch (thisAxis) {
+        case X_AXIS:
+            if(1==i)
+                val = checkpos.y();
+            else
+                val = checkpos.x();
+            foreach(pla,m_planes) {
+                QList<QVector3D*> list = pla->getVertexes();
+                if(pla->getTopLeft().x()==val)
+                    xMatch.append(list.at(0));
+                if(pla->getBotLeft().x()==val)
+                    xMatch.append(list.at(1));
+                if(pla->getTopRight().x()==val)
+                    xMatch.append(list.at(2));
+            }
+            break;
+        case Y_AXIS:
+            if(1==i)
+                val = checkpos.y();
+            else
+                val = checkpos.x();
+            foreach(pla,m_planes) {
+                QList<QVector3D*> list = pla->getVertexes();
+                if(pla->getTopLeft().y()==val)
+                    yMatch.append(list.at(0));
+                if(pla->getBotLeft().y()==val)
+                    yMatch.append(list.at(1));
+                if(pla->getTopRight().y()==val)
+                    yMatch.append(list.at(2));
+            }
+            break;
+        case Z_AXIS:
+            if(1==i)
+                val = checkpos.y();
+            else
+                val = checkpos.x();
+            foreach(pla,m_planes) {
+                QList<QVector3D*> list = pla->getVertexes();
+                if(pla->getTopLeft().z()==val)
+                    zMatch.append(list.at(0));
+                if(pla->getBotLeft().z()==val)
+                    zMatch.append(list.at(1));
+                if(pla->getTopRight().z()==val)
+                    zMatch.append(list.at(2));
+            }
+            break;
+        default:
+
+            break;
+        }
+    }
 }
 

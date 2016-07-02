@@ -13,7 +13,6 @@ class Plane
     QVector3D m_bot_left;
     QVector3D m_top_left;
     QVector3D m_top_right;
-
 public:
     Plane(QVector3D bot_left, QVector3D top_left, QVector3D top_right);
     void setBotLeft(QVector3D bot_left);
@@ -23,6 +22,14 @@ public:
     QVector3D getTopRight();
     QVector3D getTopLeft();
     bool checkValid(QVector3D bot_left, QVector3D top_left, QVector3D top_right);
+    QList<QVector3D*> getVertexes() {
+        QList<QVector3D*> list;
+        list.append(&m_bot_left);
+        list.append(&m_top_left);
+        list.append(&m_top_right);
+        return list;
+    };
+
 };
 
 //!
@@ -39,6 +46,12 @@ class Brush
     QPointF m_x_max_min;
     QPointF m_y_max_min;
     QPointF m_z_max_min;
+
+    QList<QVector3D*> xMatch;
+    QList<QVector3D*> yMatch;
+    QList<QVector3D*> zMatch;
+
+
 
 public:
     Brush(QList<Plane*> planes);
@@ -59,10 +72,12 @@ public:
         Y_AXIS,
         Z_AXIS,
     };
+    void matchingVertexes(axis primary, axis secondary, QVector2D checkpos);
     QVector2D getTopLeft(axis primary, axis secondary);
     QVector2D getTopRight(axis primary, axis secondary);
     QVector2D getBottomLeft(axis primary, axis secondary);
     QVector2D getBottomRight(axis primary, axis secondary);
+    void transform(boundingBox corner, axis primary, axis secondary, QPointF newpos);
 
 };
 

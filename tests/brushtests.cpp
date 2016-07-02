@@ -119,9 +119,7 @@ void BrushTests::testCorners() {
     planes.prepend(plane = new Plane(QVector3D(128, 32, 128),QVector3D(-128, 32, 128),QVector3D(-128, 32, 0)));
     planes.prepend(plane = new Plane(QVector3D(128, 0, 0),QVector3D(-128, 0, 0),QVector3D(-128, 0, 128)));
     Brush brush(planes);
-    //    XY_AXIS,
-    //    YZ_AXIS,
-    //    XZ_AXIS,
+
     //! X against Y axis
     QCOMPARE(brush.getTopLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(-128,32));
     QCOMPARE(brush.getTopRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(128,32));
@@ -134,10 +132,35 @@ void BrushTests::testCorners() {
     QCOMPARE(brush.getBottomLeft(Brush::Y_AXIS, Brush::Z_AXIS).toPoint(), QPoint(0,0));
     QCOMPARE(brush.getBottomRight(Brush::Y_AXIS, Brush::Z_AXIS).toPoint(), QPoint(32,0));
 
-    //! Y against Z axis
-    QCOMPARE(brush.getTopLeft(Brush::Y_AXIS, Brush::Z_AXIS).toPoint(), QPoint(0,128));
-    QCOMPARE(brush.getTopRight(Brush::Y_AXIS, Brush::Z_AXIS).toPoint(), QPoint(32,128));
-    QCOMPARE(brush.getBottomLeft(Brush::Y_AXIS, Brush::Z_AXIS).toPoint(), QPoint(0,0));
-    QCOMPARE(brush.getBottomRight(Brush::Y_AXIS, Brush::Z_AXIS).toPoint(), QPoint(32,0));
+    //! X against Z axis
+    QCOMPARE(brush.getTopLeft(Brush::X_AXIS, Brush::Z_AXIS).toPoint(), QPoint(-128,128));
+    QCOMPARE(brush.getTopRight(Brush::X_AXIS, Brush::Z_AXIS).toPoint(), QPoint(128,128));
+    QCOMPARE(brush.getBottomLeft(Brush::X_AXIS, Brush::Z_AXIS).toPoint(), QPoint(-128,0));
+    QCOMPARE(brush.getBottomRight(Brush::X_AXIS, Brush::Z_AXIS).toPoint(), QPoint(128,0));
 
+}
+
+void BrushTests::testTransform() {
+    QList<Plane*> planes;
+    Plane *plane;
+    planes.prepend(plane = new Plane(QVector3D(-128, 32, 128),QVector3D(128, 32, 128),QVector3D(128, 0, 128)));
+    planes.prepend(plane = new Plane(QVector3D(-128, 0, 0),QVector3D(128, 0, 0),QVector3D(128, 32, 0)));
+    planes.prepend(plane = new Plane(QVector3D(-128, 32, 128),QVector3D(-128, 0, 128),QVector3D(-128, 0, 0)));
+    planes.prepend(plane = new Plane(QVector3D(128, 32, 0),QVector3D(128, 0, 0),QVector3D(128, 0, 128)));
+    planes.prepend(plane = new Plane(QVector3D(128, 32, 128),QVector3D(-128, 32, 128),QVector3D(-128, 32, 0)));
+    planes.prepend(plane = new Plane(QVector3D(128, 0, 0),QVector3D(-128, 0, 0),QVector3D(-128, 0, 128)));
+    Brush brush(planes);
+
+    //! Move the top left corner to -256
+    brush.transform(Brush::BOUND_BOX__TOP_LEFT, Brush::X_AXIS, Brush::Y_AXIS, QPoint(-256,64));
+    QCOMPARE(brush.getTopLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(-256,64));
+    QCOMPARE(brush.getTopRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(128,64));
+    QCOMPARE(brush.getBottomLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(-256,0));
+    QCOMPARE(brush.getBottomRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(128,0));
+
+    brush.transform(Brush::BOUND_BOX__TOP_RIGHT, Brush::X_AXIS, Brush::Y_AXIS, QPoint(256,128));
+    QCOMPARE(brush.getTopLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(-256,128));
+    QCOMPARE(brush.getTopRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(256,128));
+    QCOMPARE(brush.getBottomLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(-256,0));
+    QCOMPARE(brush.getBottomRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(256,0));
 }
