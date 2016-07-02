@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QtCore>
 #include <QVector3D>
-
+#include <QVector2D>
 //!
 //! \brief The Plane class represents a 2D plane
 //!
@@ -13,6 +13,7 @@ class Plane
     QVector3D m_bot_left;
     QVector3D m_top_left;
     QVector3D m_top_right;
+
 public:
     Plane(QVector3D bot_left, QVector3D top_left, QVector3D top_right);
     void setBotLeft(QVector3D bot_left);
@@ -24,13 +25,45 @@ public:
     bool checkValid(QVector3D bot_left, QVector3D top_left, QVector3D top_right);
 };
 
+//!
+//! \brief The Brush class represents a 3D solid
+//!
 class Brush
 {
     QList<Plane*> m_planes;
+
+    bool getBoundingBox();
+    void setXMinMax();
+    void setYMinMax();
+    void setZMinMax();
+    QPointF m_x_max_min;
+    QPointF m_y_max_min;
+    QPointF m_z_max_min;
+
 public:
     Brush(QList<Plane*> planes);
     bool checkValid(QList<Plane*> planes);
     int getNumOfSides();
+    enum boundingBox {
+        BOUND_BOX__TOP_LEFT,
+        BOUND_BOX__TOP_RIGHT,
+        BOUND_BOX__BOTTOM_RIGHT,
+        BOUND_BOX__BOTTOM_LEFT,
+        BOUND_BOX__LEFT,
+        BOUND_BOX__RIGHT,
+        BOUND_BOX__BOTTOM,
+        BOUND_BOX__TOP,
+    };
+    enum axis {
+        X_AXIS,
+        Y_AXIS,
+        Z_AXIS,
+    };
+    QVector2D getTopLeft(axis primary, axis secondary);
+    QVector2D getTopRight(axis primary, axis secondary);
+    QVector2D getBottomLeft(axis primary, axis secondary);
+    QVector2D getBottomRight(axis primary, axis secondary);
+
 };
 
 #endif // BRUSH_H

@@ -20,6 +20,7 @@ class BrushTests : public QObject
     private slots:
         void testInitBrush();
         void testInvalid();
+        void testCorners();
 
 };
 

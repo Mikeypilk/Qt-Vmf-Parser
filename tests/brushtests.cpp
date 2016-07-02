@@ -73,7 +73,9 @@ void PlaneTests::testInvalid() {
     QCOMPARE(z.getTopLeft(), uninit3d);
     QCOMPARE(z.getTopRight(), uninit3d);
 }
-
+///////////////////////////////////////////////////////////////////////////////
+/// BRUSH TESTS
+/// ///////////////////////////////////////////////////////////////////////////
 //!
 //! \brief BrushTests::testInitBrush test init
 //!
@@ -91,8 +93,7 @@ void BrushTests::testInitBrush() {
     QCOMPARE(brush.getNumOfSides(), 6);
 }
 //!
-//! \brief BrushTests::testInvalid
-//! Not allowed more than one face on the same plane!
+//! \brief BrushTests::testInvalid tests more than one plane on same plane
 //!
 void BrushTests::testInvalid() {
     QList<Plane*> planes2;
@@ -103,4 +104,40 @@ void BrushTests::testInvalid() {
     planes2.prepend(plane2 = new Plane(QVector3D(-32, 32, 0),QVector3D(-32, -32, 0),QVector3D(32 ,-32,  0)));
     Brush brush2(planes2);
     QCOMPARE(brush2.getNumOfSides(), 0);
+}
+//!
+//! \brief BrushTests::testCorners tests that the corners for the bounding box are calculated
+//!
+void BrushTests::testCorners() {
+    //    https://developer.valvesoftware.com/wiki/VMF#Planes
+    QList<Plane*> planes;
+    Plane *plane;
+    planes.prepend(plane = new Plane(QVector3D(-128, 32, 128),QVector3D(128, 32, 128),QVector3D(128, 0, 128)));
+    planes.prepend(plane = new Plane(QVector3D(-128, 0, 0),QVector3D(128, 0, 0),QVector3D(128, 32, 0)));
+    planes.prepend(plane = new Plane(QVector3D(-128, 32, 128),QVector3D(-128, 0, 128),QVector3D(-128, 0, 0)));
+    planes.prepend(plane = new Plane(QVector3D(128, 32, 0),QVector3D(128, 0, 0),QVector3D(128, 0, 128)));
+    planes.prepend(plane = new Plane(QVector3D(128, 32, 128),QVector3D(-128, 32, 128),QVector3D(-128, 32, 0)));
+    planes.prepend(plane = new Plane(QVector3D(128, 0, 0),QVector3D(-128, 0, 0),QVector3D(-128, 0, 128)));
+    Brush brush(planes);
+    //    XY_AXIS,
+    //    YZ_AXIS,
+    //    XZ_AXIS,
+    //! X against Y axis
+    QCOMPARE(brush.getTopLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(-128,32));
+    QCOMPARE(brush.getTopRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(128,32));
+    QCOMPARE(brush.getBottomLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(-128,0));
+    QCOMPARE(brush.getBottomRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(128,0));
+
+    //! Y against Z axis
+    QCOMPARE(brush.getTopLeft(Brush::Y_AXIS, Brush::Z_AXIS).toPoint(), QPoint(0,128));
+    QCOMPARE(brush.getTopRight(Brush::Y_AXIS, Brush::Z_AXIS).toPoint(), QPoint(32,128));
+    QCOMPARE(brush.getBottomLeft(Brush::Y_AXIS, Brush::Z_AXIS).toPoint(), QPoint(0,0));
+    QCOMPARE(brush.getBottomRight(Brush::Y_AXIS, Brush::Z_AXIS).toPoint(), QPoint(32,0));
+
+    //! Y against Z axis
+    QCOMPARE(brush.getTopLeft(Brush::Y_AXIS, Brush::Z_AXIS).toPoint(), QPoint(0,128));
+    QCOMPARE(brush.getTopRight(Brush::Y_AXIS, Brush::Z_AXIS).toPoint(), QPoint(32,128));
+    QCOMPARE(brush.getBottomLeft(Brush::Y_AXIS, Brush::Z_AXIS).toPoint(), QPoint(0,0));
+    QCOMPARE(brush.getBottomRight(Brush::Y_AXIS, Brush::Z_AXIS).toPoint(), QPoint(32,0));
+
 }
