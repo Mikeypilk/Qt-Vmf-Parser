@@ -1,6 +1,6 @@
 #include "brush.h"
 //!
-//! \brief Plane  :      break;:Plane Contruct a plane with 3 vertex
+//! \brief Plane::Plane Contruct a plane with 3 vertex
 //! \param bot_left - Defines the bottom left vertex
 //! \param top_left - Defines the top left vertex
 //! \param top_right - Defines the top right vertex
@@ -78,6 +78,18 @@ bool Plane::checkValid(QVector3D bot_left, QVector3D top_left, QVector3D top_rig
     else
         return 0;
 }
+//!
+//! \brief getVertexes returns pointers to vertexes for editing
+//! Remember to validate the vertexes when using this!
+//! \return
+//!
+QList<QVector3D*> Plane::getVertexes() {
+    QList<QVector3D*> list;
+    list.append(&m_bot_left);
+    list.append(&m_top_left);
+    list.append(&m_top_right);
+    return list;
+};
 //!
 //! \brief Brush::Brush
 //! \param planes
@@ -385,10 +397,60 @@ QVector2D Brush::getBottomRight(axis primary, axis secondary) {
     }
     return vec;
 }
-void Brush::transform(boundingBox corner, axis primary, axis secondary, QPointF newpos) {
-
+//!
+//! \brief Brush::getBottom i.e. the center between bottom left and right
+//! \param primary
+//! \param secondary
+//! \return
+//!
+QVector2D Brush::getBottom(axis primary, axis secondary) {
+    QVector2D bottomRight = getBottomRight(primary,secondary);
+    QVector2D bottomLeft = getBottomLeft(primary,secondary);
+    return (bottomRight + bottomLeft) / 2;
+}
+//!
+//! \brief Brush::getTop
+//! \param primary
+//! \param secondary
+//! \return
+//!
+QVector2D Brush::getTop(axis primary, axis secondary) {
+    QVector2D topRight = getTopRight(primary,secondary);
+    QVector2D topLeft = getTopLeft(primary,secondary);
+    return (topRight + topLeft) / 2;
+}
+//!
+//! \brief Brush::getLeft
+//! \param primary
+//! \param secondary
+//! \return
+//!
+QVector2D Brush::getLeft(axis primary, axis secondary) {
+    QVector2D topLeft = getTopLeft(primary,secondary);
+    QVector2D bottomLeft = getBottomLeft(primary,secondary);
+    return (bottomLeft + topLeft) / 2;
+}
+//!
+//! \brief Brush::getRight
+//! \param primary
+//! \param secondary
+//! \return
+//!
+QVector2D Brush::getRight(axis primary, axis secondary) {
+    QVector2D topRight = getTopRight(primary,secondary);
+    QVector2D bottomRight = getBottomRight(primary,secondary);
+    return (bottomRight + topRight) / 2;
+}
+//!
+//! \brief Brush::transform
+//! \param corner
+//! \param primary
+//! \param secondary
+//! \param newpos
+//!
+void Brush::transform(boundingBox box, axis primary, axis secondary, QPointF newpos) {
     QVector2D coords;
-    switch (corner) {
+    switch (box) {
     case  BOUND_BOX__TOP_LEFT:
         coords = getTopLeft(primary, secondary);
         break;
@@ -401,13 +463,17 @@ void Brush::transform(boundingBox corner, axis primary, axis secondary, QPointF 
     case  BOUND_BOX__BOTTOM_LEFT:
         coords = getBottomLeft(primary, secondary);
         break;
-    case  BOUND_BOX__LEFT:
+    case  BOUND_BOX__TOP:
+        coords = getTop(primary, secondary);
         break;
     case  BOUND_BOX__RIGHT:
+        coords = getRight(primary, secondary);
         break;
     case  BOUND_BOX__BOTTOM:
+        coords = getBottom(primary, secondary);
         break;
-    case  BOUND_BOX__TOP:
+    case  BOUND_BOX__LEFT:
+        coords = getLeft(primary, secondary);
         break;
     default  :
         break;
@@ -452,8 +518,13 @@ void Brush::transform(boundingBox corner, axis primary, axis secondary, QPointF 
     default:
         break;
     }
-
 }
+//!
+//! \brief Brush::matchingVertexes
+//! \param primary
+//! \param secondary
+//! \param checkpos
+//!
 void  Brush::matchingVertexes(axis primary, axis secondary, QVector2D checkpos) {
     Plane *pla;
     axis thisAxis = X_AXIS;
@@ -513,7 +584,6 @@ void  Brush::matchingVertexes(axis primary, axis secondary, QVector2D checkpos) 
             }
             break;
         default:
-
             break;
         }
     }

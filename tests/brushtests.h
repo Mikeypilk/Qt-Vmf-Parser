@@ -21,7 +21,9 @@ class BrushTests : public QObject
         void testInitBrush();
         void testInvalid();
         void testCorners();
-        void testTransform();
+        void testEdges();
+        void testTransformCorners();
+        void testTransformEdges();
 
 };
 
