@@ -4,7 +4,7 @@
 /// PLANE TESTS
 /// ///////////////////////////////////////////////////////////////////////////
 //!
-//! \brief PlaneTests::testInitPlane Test init"
+//! \brief PlaneTests::testInitPlane test init"
 //!
 void PlaneTests::testInitPlane() {
     QVector3D botLeft(-16, -16, 0);
@@ -17,7 +17,7 @@ void PlaneTests::testInitPlane() {
 }
 
 //!
-//! \brief PlaneTests::testGetSet Tests get and set are implemented properly
+//! \brief PlaneTests::testGetSet tests get and set are implemented properly
 //!
 void PlaneTests::testGetSet() {
 
@@ -74,3 +74,33 @@ void PlaneTests::testInvalid() {
     QCOMPARE(z.getTopRight(), uninit3d);
 }
 
+//!
+//! \brief BrushTests::testInitBrush test init
+//!
+void BrushTests::testInitBrush() {
+    //    https://developer.valvesoftware.com/wiki/VMF#Planes
+    QList<Plane*> planes;
+    Plane *plane;
+    planes.prepend(plane = new Plane(QVector3D(-128, 32, 128),QVector3D(128, 32, 128),QVector3D(128, 0, 128)));
+    planes.prepend(plane = new Plane(QVector3D(-128, 0, 0),QVector3D(128, 0, 0),QVector3D(128, 32, 0)));
+    planes.prepend(plane = new Plane(QVector3D(-128, 32, 128),QVector3D(-128, 0, 128),QVector3D(-128, 0, 0)));
+    planes.prepend(plane = new Plane(QVector3D(128, 32, 0),QVector3D(128, 0, 0),QVector3D(128, 0, 128)));
+    planes.prepend(plane = new Plane(QVector3D(128, 32, 128),QVector3D(-128, 32, 128),QVector3D(-128, 32, 0)));
+    planes.prepend(plane = new Plane(QVector3D(128, 0, 0),QVector3D(-128, 0, 0),QVector3D(-128, 0, 128)));
+    Brush brush(planes);
+    QCOMPARE(brush.getNumOfSides(), 6);
+}
+//!
+//! \brief BrushTests::testInvalid
+//! Not allowed more than one face on the same plane!
+//!
+void BrushTests::testInvalid() {
+    QList<Plane*> planes2;
+    Plane *plane2;
+    planes2.prepend(plane2 = new Plane(QVector3D(-32, -32, 0),QVector3D(32, -32, 0),QVector3D(32, 32, 0)));
+    planes2.prepend(plane2 = new Plane(QVector3D(32, -32, 0),QVector3D(32, 32,  0),QVector3D(-32, 32, 0)));
+    planes2.prepend(plane2 = new Plane(QVector3D(32, 32,  0),QVector3D(-32, 32, 0),QVector3D(-32, -32, 0)));
+    planes2.prepend(plane2 = new Plane(QVector3D(-32, 32, 0),QVector3D(-32, -32, 0),QVector3D(32 ,-32,  0)));
+    Brush brush2(planes2);
+    QCOMPARE(brush2.getNumOfSides(), 0);
+}

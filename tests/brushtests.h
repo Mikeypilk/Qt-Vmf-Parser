@@ -14,5 +14,13 @@ class PlaneTests : public QObject
         void testInvalid();
 };
 
+class BrushTests : public QObject
+{
+    Q_OBJECT
+    private slots:
+        void testInitBrush();
+        void testInvalid();
+
+};
 
 #endif // PLANETESTS_H

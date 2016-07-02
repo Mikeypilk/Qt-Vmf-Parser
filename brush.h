@@ -1,7 +1,8 @@
-#ifndef PLANE_H
-#define PLANE_H
+#ifndef BRUSH_H
+#define BRUSH_H
 
 #include <QObject>
+#include <QtCore>
 #include <QVector3D>
 
 //!
@@ -21,7 +22,15 @@ public:
     QVector3D getTopRight();
     QVector3D getTopLeft();
     bool checkValid(QVector3D bot_left, QVector3D top_left, QVector3D top_right);
-
 };
 
-#endif // PLANE_H
+class Brush
+{
+    QList<Plane*> m_planes;
+public:
+    Brush(QList<Plane*> planes);
+    bool checkValid(QList<Plane*> planes);
+    int getNumOfSides();
+};
+
+#endif // BRUSH_H
