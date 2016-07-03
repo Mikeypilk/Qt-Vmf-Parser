@@ -157,7 +157,7 @@ int Brush::getNumOfSides() {
 //!
 void Brush::setXMinMax() {
     QPointF result;
-    qreal f=0;
+    qreal f=DBL_MIN;
     Plane *plane;
     foreach (plane, m_planes) {
         if(plane->getBotLeft().x() > f)
@@ -168,7 +168,7 @@ void Brush::setXMinMax() {
             f = plane->getTopRight().x();
     }
     result.setX(f);
-    f=0;
+    f=DBL_MAX;
     foreach (plane, m_planes) {
         if(plane->getBotLeft().x() < f)
             f = plane->getBotLeft().x();
@@ -185,8 +185,9 @@ void Brush::setXMinMax() {
 //!
 void Brush::setYMinMax() {
     QPointF result;
-    qreal f=0;
+    qreal f=DBL_MIN;
     Plane *plane;
+    //! Maximum
     foreach (plane, m_planes) {
         if(plane->getBotLeft().y() > f)
             f = plane->getBotLeft().y();
@@ -196,7 +197,8 @@ void Brush::setYMinMax() {
             f = plane->getTopRight().y();
     }
     result.setX(f);
-    f=0;
+    f=DBL_MAX;
+    //! Minimum
     foreach (plane, m_planes) {
         if(plane->getBotLeft().y() < f)
             f = plane->getBotLeft().y();
@@ -213,7 +215,7 @@ void Brush::setYMinMax() {
 //!
 void Brush::setZMinMax() {
     QPointF result;
-    qreal f=0;
+    qreal f=DBL_MIN;
     Plane *plane;
     foreach (plane, m_planes) {
         if(plane->getBotLeft().z() > f)
@@ -224,7 +226,7 @@ void Brush::setZMinMax() {
             f = plane->getTopRight().z();
     }
     result.setX(f);
-    f=0;
+    f=DBL_MAX;
     foreach (plane, m_planes) {
         if(plane->getBotLeft().z() < f)
             f = plane->getBotLeft().z();
@@ -458,7 +460,48 @@ QVector2D Brush::getRight(axis primary, axis secondary) {
     QVector2D bottomRight = getBottomRight(primary,secondary);
     return (bottomRight + topRight) / 2;
 }
-
+//!
+//! \brief Brush::translate
+//! \param box
+//! \param primary
+//! \param secondary
+//! \param transform
+//!
+void Brush::translate(axis primary, axis secondary, QVector2D transform) {
+    QMatrix4x4 matrix;
+    switch (primary) {
+    case X_AXIS:
+        matrix.translate(transform.x(), 0, 0);
+        break;
+    case Y_AXIS:
+        matrix.translate(0, transform.x(), 0);
+        break;
+    case Z_AXIS:
+        matrix.translate(0, 0, transform.x());
+        break;
+    default:
+        break;
+    }
+    switch (secondary) {
+    case X_AXIS:
+        matrix.translate(transform.y(), 0, 0);
+        break;
+    case Y_AXIS:
+        matrix.translate(0, transform.y(), 0);
+        break;
+    case Z_AXIS:
+        matrix.translate(0, 0, transform.y());
+        break;
+    default:
+        break;
+    }
+    Plane *pla;
+    foreach(pla, m_planes) {
+        pla->setBotLeft(matrix.map(pla->getBotLeft()));
+        pla->setTopLeft(matrix.map(pla->getTopLeft()));
+        pla->setTopRight(matrix.map(pla->getTopRight()));
+    }
+}
 
 //!
 //! \brief Brush::transform
@@ -469,48 +512,48 @@ QVector2D Brush::getRight(axis primary, axis secondary) {
 //!
 void Brush::transform(boundingBox box, axis primary, axis secondary, QVector2D transform) {
 
-//    QVector2D target;
-//    QVector2D origin;
-//    QVector2D go;
+    //    QVector2D target;
+    //    QVector2D origin;
+    //    QVector2D go;
 
-//    switch (box) {
-//    case  BOUND_BOX__TOP_LEFT:
-//        target = getTopLeft(primary, secondary);
-//        origin = getBottomRight(primary, secondary);
+    //    switch (box) {
+    //    case  BOUND_BOX__TOP_LEFT:
+    //        target = getTopLeft(primary, secondary);
+    //        origin = getBottomRight(primary, secondary);
 
-//        break;
-//    case  BOUND_BOX__TOP_RIGHT:
-//        target = getTopRight(primary, secondary);
-//        origin = getBottomLeft(primary, secondary);
-//        break;
-//    case  BOUND_BOX__BOTTOM_RIGHT:
-//        target = getBottomRight(primary, secondary);
-//        origin = getTopLeft(primary, secondary);
-//        break;
-//    case  BOUND_BOX__BOTTOM_LEFT:
-//        target = getBottomLeft(primary, secondary);
-//        origin = getTopRight(primary, secondary);
-//        break;
-//    case  BOUND_BOX__TOP:
-//        target = getTop(primary, secondary);
-//        break;
-//    case  BOUND_BOX__RIGHT:
-//        target = getRight(primary, secondary);
-//        break;
-//    case  BOUND_BOX__BOTTOM:
-//        target = getBottom(primary, secondary);
-//        break;
-//    case  BOUND_BOX__LEFT:
-//        target = getLeft(primary, secondary);
-//        break;
-//    default  :
-//        break;
+    //        break;
+    //    case  BOUND_BOX__TOP_RIGHT:
+    //        target = getTopRight(primary, secondary);
+    //        origin = getBottomLeft(primary, secondary);
+    //        break;
+    //    case  BOUND_BOX__BOTTOM_RIGHT:
+    //        target = getBottomRight(primary, secondary);
+    //        origin = getTopLeft(primary, secondary);
+    //        break;
+    //    case  BOUND_BOX__BOTTOM_LEFT:
+    //        target = getBottomLeft(primary, secondary);
+    //        origin = getTopRight(primary, secondary);
+    //        break;
+    //    case  BOUND_BOX__TOP:
+    //        target = getTop(primary, secondary);
+    //        break;
+    //    case  BOUND_BOX__RIGHT:
+    //        target = getRight(primary, secondary);
+    //        break;
+    //    case  BOUND_BOX__BOTTOM:
+    //        target = getBottom(primary, secondary);
+    //        break;
+    //    case  BOUND_BOX__LEFT:
+    //        target = getLeft(primary, secondary);
+    //        break;
+    //    default  :
+    //        break;
 
-//        foreach(pla, m_planes) {
+    //        foreach(pla, m_planes) {
 
-//            pla->setBotLeft(matrix.map(pla->getBotLeft()));
-//            pla->setTopLeft(matrix.map(pla->getTopLeft()));
-//            pla->setTopRight(matrix.map(pla->getTopRight()));
-    }
+    //            pla->setBotLeft(matrix.map(pla->getBotLeft()));
+    //            pla->setTopLeft(matrix.map(pla->getTopLeft()));
+    //            pla->setTopRight(matrix.map(pla->getTopRight()));
+}
 
 

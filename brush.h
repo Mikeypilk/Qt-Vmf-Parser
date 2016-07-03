@@ -75,6 +75,7 @@ public:
         BOUND_BOX__TOP,
         BOUND_BOX__RIGHT,
         BOUND_BOX__BOTTOM,
+        BOUND_BOX__CENTER,
     };
     enum axis {
         X_AXIS,
@@ -91,6 +92,7 @@ public:
     QVector2D getTop(axis primary, axis secondary);
     QVector2D getLeft(axis primary, axis secondary);
     QVector2D getRight(axis primary, axis secondary);
+    void translate(axis primary, axis secondary, QVector2D transform);
     void transform(boundingBox box, axis primary, axis secondary, QVector2D transform);
 
 };

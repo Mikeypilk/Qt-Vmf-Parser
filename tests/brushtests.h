@@ -39,8 +39,8 @@ class BrushTests : public QObject
         void testInvalid();
         void testCorners();
         void testEdges();
-        void testTransformCorners();
-        void testTransformEdges();
+        void testTranslate();
+
 
 };
 
