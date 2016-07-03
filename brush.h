@@ -22,6 +22,7 @@ along with World Editor.  If not, see <http://www.gnu.org/licenses/>.
 #include <QtCore>
 #include <QVector3D>
 #include <QVector2D>
+#include <QMatrix4x4>
 //!
 //! \brief The Plane class represents a 2D plane
 //!
@@ -90,7 +91,7 @@ public:
     QVector2D getTop(axis primary, axis secondary);
     QVector2D getLeft(axis primary, axis secondary);
     QVector2D getRight(axis primary, axis secondary);
-    void transform(boundingBox box, axis primary, axis secondary, QPointF newpos);
+    void transform(boundingBox box, axis primary, axis secondary, QVector2D transform);
 
 };
 

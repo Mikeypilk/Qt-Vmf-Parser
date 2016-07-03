@@ -458,6 +458,8 @@ QVector2D Brush::getRight(axis primary, axis secondary) {
     QVector2D bottomRight = getBottomRight(primary,secondary);
     return (bottomRight + topRight) / 2;
 }
+
+
 //!
 //! \brief Brush::transform
 //! \param corner
@@ -465,144 +467,50 @@ QVector2D Brush::getRight(axis primary, axis secondary) {
 //! \param secondary
 //! \param newpos
 //!
-void Brush::transform(boundingBox box, axis primary, axis secondary, QPointF newpos) {
-    QVector2D coords;
-    switch (box) {
-    case  BOUND_BOX__TOP_LEFT:
-        coords = getTopLeft(primary, secondary);
-        break;
-    case  BOUND_BOX__TOP_RIGHT:
-        coords = getTopRight(primary, secondary);
-        break;
-    case  BOUND_BOX__BOTTOM_RIGHT:
-        coords = getBottomRight(primary, secondary);
-        break;
-    case  BOUND_BOX__BOTTOM_LEFT:
-        coords = getBottomLeft(primary, secondary);
-        break;
-    case  BOUND_BOX__TOP:
-        coords = getTop(primary, secondary);
-        break;
-    case  BOUND_BOX__RIGHT:
-        coords = getRight(primary, secondary);
-        break;
-    case  BOUND_BOX__BOTTOM:
-        coords = getBottom(primary, secondary);
-        break;
-    case  BOUND_BOX__LEFT:
-        coords = getLeft(primary, secondary);
-        break;
-    default  :
-        break;
+void Brush::transform(boundingBox box, axis primary, axis secondary, QVector2D transform) {
+
+//    QVector2D target;
+//    QVector2D origin;
+//    QVector2D go;
+
+//    switch (box) {
+//    case  BOUND_BOX__TOP_LEFT:
+//        target = getTopLeft(primary, secondary);
+//        origin = getBottomRight(primary, secondary);
+
+//        break;
+//    case  BOUND_BOX__TOP_RIGHT:
+//        target = getTopRight(primary, secondary);
+//        origin = getBottomLeft(primary, secondary);
+//        break;
+//    case  BOUND_BOX__BOTTOM_RIGHT:
+//        target = getBottomRight(primary, secondary);
+//        origin = getTopLeft(primary, secondary);
+//        break;
+//    case  BOUND_BOX__BOTTOM_LEFT:
+//        target = getBottomLeft(primary, secondary);
+//        origin = getTopRight(primary, secondary);
+//        break;
+//    case  BOUND_BOX__TOP:
+//        target = getTop(primary, secondary);
+//        break;
+//    case  BOUND_BOX__RIGHT:
+//        target = getRight(primary, secondary);
+//        break;
+//    case  BOUND_BOX__BOTTOM:
+//        target = getBottom(primary, secondary);
+//        break;
+//    case  BOUND_BOX__LEFT:
+//        target = getLeft(primary, secondary);
+//        break;
+//    default  :
+//        break;
+
+//        foreach(pla, m_planes) {
+
+//            pla->setBotLeft(matrix.map(pla->getBotLeft()));
+//            pla->setTopLeft(matrix.map(pla->getTopLeft()));
+//            pla->setTopRight(matrix.map(pla->getTopRight()));
     }
-    matchingVertexes(primary,secondary,coords);
-    QVector3D *vec;
-    switch (primary) {
-    case X_AXIS:
-        foreach(vec, xMatch) {
-            vec->setX(newpos.x());
-        }
-        break;
-    case Y_AXIS:
-        foreach(vec, yMatch) {
-            vec->setY(newpos.x());
-        }
-        break;
-    case Z_AXIS:
-        foreach(vec, zMatch) {
-            vec->setZ(newpos.x());
-        }
-        break;
-    default:
-        break;
-    }
-    switch (secondary) {
-    case X_AXIS:
-        foreach(vec, xMatch) {
-            vec->setX(newpos.y());
-        }
-        break;
-    case Y_AXIS:
-        foreach(vec, yMatch) {
-            vec->setY(newpos.y());
-        }
-        break;
-    case Z_AXIS:
-        foreach(vec, zMatch) {
-            vec->setZ(newpos.y());
-        }
-        break;
-    default:
-        break;
-    }
-}
-//!
-//! \brief Brush::matchingVertexes
-//! \param primary
-//! \param secondary
-//! \param checkpos
-//!
-void  Brush::matchingVertexes(axis primary, axis secondary, QVector2D checkpos) {
-    Plane *pla;
-    axis thisAxis = X_AXIS;
-    xMatch.clear();
-    yMatch.clear();
-    zMatch.clear();
-    for(int i=0; i<2; i++) {
-        qreal val;
-        if (0==i)
-            thisAxis = primary;
-        if (1==i)
-            thisAxis = secondary;
-        switch (thisAxis) {
-        case X_AXIS:
-            if(1==i)
-                val = checkpos.y();
-            else
-                val = checkpos.x();
-            foreach(pla,m_planes) {
-                QList<QVector3D*> list = pla->getVertexes();
-                if(pla->getTopLeft().x()==val)
-                    xMatch.append(list.at(0));
-                if(pla->getBotLeft().x()==val)
-                    xMatch.append(list.at(1));
-                if(pla->getTopRight().x()==val)
-                    xMatch.append(list.at(2));
-            }
-            break;
-        case Y_AXIS:
-            if(1==i)
-                val = checkpos.y();
-            else
-                val = checkpos.x();
-            foreach(pla,m_planes) {
-                QList<QVector3D*> list = pla->getVertexes();
-                if(pla->getTopLeft().y()==val)
-                    yMatch.append(list.at(0));
-                if(pla->getBotLeft().y()==val)
-                    yMatch.append(list.at(1));
-                if(pla->getTopRight().y()==val)
-                    yMatch.append(list.at(2));
-            }
-            break;
-        case Z_AXIS:
-            if(1==i)
-                val = checkpos.y();
-            else
-                val = checkpos.x();
-            foreach(pla,m_planes) {
-                QList<QVector3D*> list = pla->getVertexes();
-                if(pla->getTopLeft().z()==val)
-                    zMatch.append(list.at(0));
-                if(pla->getBotLeft().z()==val)
-                    zMatch.append(list.at(1));
-                if(pla->getTopRight().z()==val)
-                    zMatch.append(list.at(2));
-            }
-            break;
-        default:
-            break;
-        }
-    }
-}
+
 
