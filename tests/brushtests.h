@@ -40,6 +40,8 @@ class BrushTests : public QObject
         void testCorners();
         void testEdges();
         void testTranslate();
+        void testRotate();
+        void testTransform();
 
 
 };

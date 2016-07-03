@@ -16,6 +16,7 @@ along with World Editor.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "brush.h"
+#define PI 3.14159265
 //!
 //! \brief Plane::Plane Contruct a plane with 3 vertex
 //! \param bot_left - Defines the bottom left vertex
@@ -466,7 +467,11 @@ QVector2D Brush::getRight(axis primary, axis secondary) {
 //! \param primary
 //! \param secondary
 //! \param transform
-//!
+
+QVector2D Brush::getCenter(axis primary, axis secondary) {
+    return ((getBottom(primary,secondary) + getTop(primary,secondary)) / 2);
+}
+
 void Brush::translate(axis primary, axis secondary, QVector2D transform) {
     QMatrix4x4 matrix;
     switch (primary) {
@@ -502,7 +507,104 @@ void Brush::translate(axis primary, axis secondary, QVector2D transform) {
         pla->setTopRight(matrix.map(pla->getTopRight()));
     }
 }
+//!
+//! \brief Brush::rotate
+//! \param primary
+//! \param secondary
+//! \param rotation
+//!
+void Brush::rotate(axis primary, axis secondary, float angle) {
 
+    angle = angle * PI/180;
+    // Move the object to the center of the grid!
+    QVector2D center = getCenter(primary, secondary);
+    translate(primary,secondary,-center);
+
+    bool rotateX = true;
+    bool rotateY = true;
+    bool rotateZ = true;
+    // Remember if your editing the X against Z axis, you do the
+    // bounding box and start to rotate your going to be wanting
+    // to rotate around the Z axis...
+    if((primary == X_AXIS) || (secondary == X_AXIS))
+        rotateX = false;
+    if((primary == Y_AXIS) || (secondary == Y_AXIS))
+        rotateY = false;
+    if((primary == Z_AXIS) || (secondary == Z_AXIS))
+        rotateZ = false;
+
+    // for some reason i couldnt understand the matrix.rotate wouldnt work..?
+    // Goto link for more info:
+    // http://inside.mines.edu/fs_home/gmurray/ArbitraryAxisRotation/
+    QMatrix4x4 matrix;
+    if(rotateZ) {
+        matrix.setRow(0, QVector4D(cos(angle), -sin(angle),0,0));
+        matrix.setRow(1, QVector4D(sin(angle), cos(angle) ,0,0));
+        matrix.setRow(2, QVector4D(0,0          ,1,0));
+        matrix.setRow(3, QVector4D(0,0          ,0,1));
+    }
+    if(rotateY) {
+        matrix.setRow(0, QVector4D(cos(angle),0,sin(angle),0));
+        matrix.setRow(1, QVector4D(0, 1,0,0));
+        matrix.setRow(2, QVector4D(-sin(angle),0,cos(angle),0));
+        matrix.setRow(3, QVector4D(0,0,0,1));
+    }
+    if(rotateX) {
+        matrix.setRow(0, QVector4D(cos(angle),-sin(angle),0,0));
+        matrix.setRow(1, QVector4D(sin(angle),cos(angle),0,0));
+        matrix.setRow(2, QVector4D(0,0,1,0));
+        matrix.setRow(3, QVector4D(0,0,0,1));
+    }
+    Plane *pla;
+    foreach(pla, m_planes) {
+        pla->setBotLeft(matrix.map(pla->getBotLeft()));
+        pla->setTopLeft(matrix.map(pla->getTopLeft()));
+        pla->setTopRight(matrix.map(pla->getTopRight()));
+    }
+    // Move the object back to where it came from!
+    translate(primary,secondary,center);
+}
+//!
+//! \brief Brush::scale
+//! \param primary
+//! \param secondary
+//! \param travector
+//!
+void Brush::scale(axis primary, axis secondary, QVector2D travector) {
+    QMatrix4x4 matrix;
+    switch (primary) {
+    case X_AXIS:
+        matrix.scale(travector.x(),1,1);
+        break;
+    case Y_AXIS:
+        matrix.scale(1, travector.x(), 1);
+        break;
+    case Z_AXIS:
+        matrix.scale(1, 1, travector.x());
+        break;
+    default:
+        break;
+    }
+    switch (secondary) {
+    case X_AXIS:
+        matrix.scale(travector.y(), 1, 1);
+        break;
+    case Y_AXIS:
+        matrix.scale(1, travector.y(), 1);
+        break;
+    case Z_AXIS:
+        matrix.scale(1, 1, travector.y());
+        break;
+    default:
+        break;
+    }
+    Plane *pla;
+    foreach(pla, m_planes) {
+        pla->setBotLeft(matrix.map(pla->getBotLeft()));
+        pla->setTopLeft(matrix.map(pla->getTopLeft()));
+        pla->setTopRight(matrix.map(pla->getTopRight()));
+    }
+}
 //!
 //! \brief Brush::transform
 //! \param corner
@@ -512,48 +614,72 @@ void Brush::translate(axis primary, axis secondary, QVector2D transform) {
 //!
 void Brush::transform(boundingBox box, axis primary, axis secondary, QVector2D transform) {
 
-    //    QVector2D target;
-    //    QVector2D origin;
-    //    QVector2D go;
+    QVector2D coords;
+    switch (box) {
+    case  BOUND_BOX__TOP_LEFT:
+        coords = getBottomRight(primary, secondary);
+        break;
+    case  BOUND_BOX__TOP_RIGHT:
+        coords = getBottomLeft(primary, secondary);
+        break;
+    case  BOUND_BOX__BOTTOM_RIGHT:
+        coords = getTopLeft(primary, secondary);
+        break;
+    case  BOUND_BOX__BOTTOM_LEFT:
+        coords = getTopRight(primary, secondary);
+        break;
+    case  BOUND_BOX__TOP:
+        coords = getBottom(primary, secondary);
+        break;
+    case  BOUND_BOX__RIGHT:
+        coords = getLeft(primary, secondary);
+        break;
+    case  BOUND_BOX__BOTTOM:
+        coords = getTop(primary, secondary);
+        break;
+    case  BOUND_BOX__LEFT:
+        coords = getRight(primary, secondary);
+        break;
+    default  :
+        break;
+    }
 
-    //    switch (box) {
-    //    case  BOUND_BOX__TOP_LEFT:
-    //        target = getTopLeft(primary, secondary);
-    //        origin = getBottomRight(primary, secondary);
+    translate(primary,secondary,-coords);
+    QVector2D size = getTopLeft(primary,secondary) - getBottomRight(primary,secondary);
+    QVector2D newSize = size + transform;
+    scale(primary,secondary,newSize/size);
 
-    //        break;
-    //    case  BOUND_BOX__TOP_RIGHT:
-    //        target = getTopRight(primary, secondary);
-    //        origin = getBottomLeft(primary, secondary);
-    //        break;
-    //    case  BOUND_BOX__BOTTOM_RIGHT:
-    //        target = getBottomRight(primary, secondary);
-    //        origin = getTopLeft(primary, secondary);
-    //        break;
-    //    case  BOUND_BOX__BOTTOM_LEFT:
-    //        target = getBottomLeft(primary, secondary);
-    //        origin = getTopRight(primary, secondary);
-    //        break;
-    //    case  BOUND_BOX__TOP:
-    //        target = getTop(primary, secondary);
-    //        break;
-    //    case  BOUND_BOX__RIGHT:
-    //        target = getRight(primary, secondary);
-    //        break;
-    //    case  BOUND_BOX__BOTTOM:
-    //        target = getBottom(primary, secondary);
-    //        break;
-    //    case  BOUND_BOX__LEFT:
-    //        target = getLeft(primary, secondary);
-    //        break;
-    //    default  :
-    //        break;
+    QVector2D newCoords;
+    switch (box) {
+    case  BOUND_BOX__TOP_LEFT:
+        newCoords = getBottomRight(primary, secondary);
+        break;
+    case  BOUND_BOX__TOP_RIGHT:
+        newCoords = getBottomLeft(primary, secondary);
+        break;
+    case  BOUND_BOX__BOTTOM_RIGHT:
+        newCoords = getTopLeft(primary, secondary);
+        break;
+    case  BOUND_BOX__BOTTOM_LEFT:
+        newCoords = getTopRight(primary, secondary);
+        break;
+    case  BOUND_BOX__TOP:
+        newCoords = getBottom(primary, secondary);
+        break;
+    case  BOUND_BOX__RIGHT:
+        newCoords = getLeft(primary, secondary);
+        break;
+    case  BOUND_BOX__BOTTOM:
+        newCoords = getTop(primary, secondary);
+        break;
+    case  BOUND_BOX__LEFT:
+        newCoords = getRight(primary, secondary);
+        break;
+    default  :
+        break;
+    }
+    translate(primary,secondary,coords);
 
-    //        foreach(pla, m_planes) {
-
-    //            pla->setBotLeft(matrix.map(pla->getBotLeft()));
-    //            pla->setTopLeft(matrix.map(pla->getTopLeft()));
-    //            pla->setTopRight(matrix.map(pla->getTopRight()));
 }
 
 

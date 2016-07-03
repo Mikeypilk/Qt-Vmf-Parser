@@ -170,7 +170,7 @@ void BrushTests::testCorners() {
     QCOMPARE(brush->getBottomLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(64,0));
     QCOMPARE(brush->getBottomRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(256,0));
 
-
+    // TODO: Write more tests
 }
 //!
 //! \brief BrushTests::testEdges tests that the edges for the bounding box are calculated properly
@@ -187,6 +187,8 @@ void BrushTests::testEdges() {
     Brush brush(planes);
 
     QCOMPARE(brush.getBottom(Brush::X_AXIS, Brush::Y_AXIS).toPointF(), QPointF(0,0));
+
+    // TODO: Write more tests
 }
 
 void BrushTests::testTranslate() {
@@ -212,5 +214,55 @@ void BrushTests::testTranslate() {
     QCOMPARE(brush.getBottomLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(-128,32));
     QCOMPARE(brush.getBottomRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(128,32));
 
+    brush.translate(Brush::X_AXIS, Brush::Y_AXIS, QVector2D(0, -48));
+    QCOMPARE(brush.getTopLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(-128,16));
+    QCOMPARE(brush.getTopRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(128,16));
+    QCOMPARE(brush.getBottomLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(-128,-16));
+    QCOMPARE(brush.getBottomRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(128,-16));
+
+    // TODO: Write more tests
+}
+
+void BrushTests::testRotate() {
+    QList<Plane*> planes;
+    Plane *plane;
+    planes.prepend(plane = new Plane(QVector3D(-128, 32, 128),QVector3D(128, 32, 128),QVector3D(128, 0, 128)));
+    planes.prepend(plane = new Plane(QVector3D(-128, 0, 0),QVector3D(128, 0, 0),QVector3D(128, 32, 0)));
+    planes.prepend(plane = new Plane(QVector3D(-128, 32, 128),QVector3D(-128, 0, 128),QVector3D(-128, 0, 0)));
+    planes.prepend(plane = new Plane(QVector3D(128, 32, 0),QVector3D(128, 0, 0),QVector3D(128, 0, 128)));
+    planes.prepend(plane = new Plane(QVector3D(128, 32, 128),QVector3D(-128, 32, 128),QVector3D(-128, 32, 0)));
+    planes.prepend(plane = new Plane(QVector3D(128, 0, 0),QVector3D(-128, 0, 0),QVector3D(-128, 0, 128)));
+    Brush *brush = new Brush(planes);
+
+    //! Rotate 90 degrees
+    brush->rotate(Brush::X_AXIS, Brush::Y_AXIS, 90);
+    QCOMPARE(brush->getTopLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(-16,144));
+    QCOMPARE(brush->getTopRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(16,144));
+    QCOMPARE(brush->getBottomLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(-16,-112));
+    QCOMPARE(brush->getBottomRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(16,-112));
+
+    // TODO: Write more tests
+
+}
+void BrushTests::testTransform() {
+    QList<Plane*> planes;
+    Plane *plane;
+    planes.prepend(plane = new Plane(QVector3D(-128, 32, 128),QVector3D(128, 32, 128),QVector3D(128, 0, 128)));
+    planes.prepend(plane = new Plane(QVector3D(-128, 0, 0),QVector3D(128, 0, 0),QVector3D(128, 32, 0)));
+    planes.prepend(plane = new Plane(QVector3D(-128, 32, 128),QVector3D(-128, 0, 128),QVector3D(-128, 0, 0)));
+    planes.prepend(plane = new Plane(QVector3D(128, 32, 0),QVector3D(128, 0, 0),QVector3D(128, 0, 128)));
+    planes.prepend(plane = new Plane(QVector3D(128, 32, 128),QVector3D(-128, 32, 128),QVector3D(-128, 32, 0)));
+    planes.prepend(plane = new Plane(QVector3D(128, 0, 0),QVector3D(-128, 0, 0),QVector3D(-128, 0, 128)));
+    Brush *brush = new Brush(planes);
+
+    //! i.e. Move the bounding box in the top left corner to a position -256 units away from top left and 64 above
+    brush->transform(Brush::BOUND_BOX__TOP_LEFT, Brush::X_AXIS, Brush::Y_AXIS, QVector2D(-256,64));
+    QCOMPARE(brush->getTopLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(-384,96));
+    QCOMPARE(brush->getTopRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(128,96));
+    QCOMPARE(brush->getBottomLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(-384,0));
+    QCOMPARE(brush->getBottomRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(128,0));
+
+
+    // TODO: Write more tests
 
 }

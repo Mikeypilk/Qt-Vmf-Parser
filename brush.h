@@ -92,8 +92,12 @@ public:
     QVector2D getTop(axis primary, axis secondary);
     QVector2D getLeft(axis primary, axis secondary);
     QVector2D getRight(axis primary, axis secondary);
+    QVector2D getCenter(axis primary, axis secondary);
     void translate(axis primary, axis secondary, QVector2D transform);
     void transform(boundingBox box, axis primary, axis secondary, QVector2D transform);
+    void rotate(axis primary, axis secondary, float angle);
+    void scale(axis primary, axis secondary, QVector2D travector);
+
 
 };
 
