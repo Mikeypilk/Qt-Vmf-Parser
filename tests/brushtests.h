@@ -19,30 +19,45 @@ along with World Editor.  If not, see <http://www.gnu.org/licenses/>.
 #define PLANETESTS_H
 
 #include <QObject>
-#include <QtTest>
+#include <QTest>
 #include "brush.h"
 
 class PlaneTests : public QObject
 {
     Q_OBJECT
-    private slots:
-        void testInitPlane();
-        void testGetSet();
-        void testInvalid();
+private slots:
+    void testInitPlane();
+    void testGetSet();
+    void testInvalid();
 };
 
 class BrushTests : public QObject
 {
     Q_OBJECT
-    private slots:
-        void testInitBrush();
-        void testInvalid();
-        void testCorners();
-        void testEdges();
-        void testTranslate();
-        void testRotate();
-        void testTransform();
-
+    Brush *brush;
+    QList<QPoint> expected;
+    QList<QPoint> actual;
+    QList<Plane*> planes;
+private slots:
+    void init();
+    void cleanup();
+    void testInitBrush();
+    void testInvalid();
+    void testCorners();
+    void testEdges();
+    void testTranslate();
+    void testRotateFullCircleXY();
+    void testRotateYZ();
+    void testTransform_topLeft();
+    void testTransform_topLeft_2();
+    void testTransform_topLeft_3();
+    void testTransform_topLeft_4();
+    void testTransform_topRight();
+    void testTransform_topRight_2();
+    void testTransform_topRight_3();
+    void testTransform_topRight_4();
+    void testTransform_botLeft();
+    void testTransform_botRight();
 
 };
 

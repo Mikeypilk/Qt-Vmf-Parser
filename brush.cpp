@@ -35,27 +35,21 @@ Plane::Plane(QVector3D bot_left, QVector3D top_left, QVector3D top_right) {
 //! \param bot_left
 //!
 void Plane::setBotLeft(QVector3D bot_left) {
-    if(!checkValid(bot_left, m_top_left, m_top_right)) {
         m_bot_left = bot_left;
-    }
 }
 //!
 //! \brief Plane::setTopRight
 //! \param top_right
 //!
 void Plane::setTopRight(QVector3D top_right) {
-    if(!checkValid(m_bot_left, m_top_left, top_right)) {
         m_top_right = top_right;
-    }
 }
 //!
 //! \brief Plane::setTopLeft
 //! \param top_left
 //!
 void Plane::setTopLeft(QVector3D top_left) {
-    if(!checkValid(m_bot_left, top_left, m_top_right)) {
         m_top_left = top_left;
-    }
 }
 //!
 //! \brief Plane::getBotLeft
@@ -96,18 +90,6 @@ bool Plane::checkValid(QVector3D bot_left, QVector3D top_left, QVector3D top_rig
     else
         return 0;
 }
-//!
-//! \brief getVertexes returns pointers to vertexes for editing
-//! Remember to validate the vertexes when using this!
-//! \return
-//!
-QList<QVector3D*> Plane::getVertexes() {
-    QList<QVector3D*> list;
-    list.append(&m_bot_left);
-    list.append(&m_top_left);
-    list.append(&m_top_right);
-    return list;
-};
 //!
 //! \brief Brush::Brush
 //! \param planes
@@ -519,7 +501,7 @@ void Brush::rotate(axis primary, axis secondary, float angle) {
     // Move the object to the center of the grid!
     QVector2D center = getCenter(primary, secondary);
     translate(primary,secondary,-center);
-
+    Plane *pla;
     bool rotateX = true;
     bool rotateY = true;
     bool rotateZ = true;
@@ -550,12 +532,11 @@ void Brush::rotate(axis primary, axis secondary, float angle) {
         matrix.setRow(3, QVector4D(0,0,0,1));
     }
     if(rotateX) {
-        matrix.setRow(0, QVector4D(cos(angle),-sin(angle),0,0));
-        matrix.setRow(1, QVector4D(sin(angle),cos(angle),0,0));
-        matrix.setRow(2, QVector4D(0,0,1,0));
+        matrix.setRow(0, QVector4D(1,0,0,0));
+        matrix.setRow(1, QVector4D(0,cos(angle),-sin(angle),0));
+        matrix.setRow(2, QVector4D(0,sin(angle),cos(angle),0));
         matrix.setRow(3, QVector4D(0,0,0,1));
     }
-    Plane *pla;
     foreach(pla, m_planes) {
         pla->setBotLeft(matrix.map(pla->getBotLeft()));
         pla->setTopLeft(matrix.map(pla->getTopLeft()));
@@ -563,6 +544,7 @@ void Brush::rotate(axis primary, axis secondary, float angle) {
     }
     // Move the object back to where it came from!
     translate(primary,secondary,center);
+
 }
 //!
 //! \brief Brush::scale
@@ -615,6 +597,7 @@ void Brush::scale(axis primary, axis secondary, QVector2D travector) {
 void Brush::transform(boundingBox box, axis primary, axis secondary, QVector2D transform) {
 
     QVector2D coords;
+    QVector2D myCoords;
     switch (box) {
     case  BOUND_BOX__TOP_LEFT:
         coords = getBottomRight(primary, secondary);
@@ -643,41 +626,39 @@ void Brush::transform(boundingBox box, axis primary, axis secondary, QVector2D t
     default  :
         break;
     }
-
+    QVector2D size;
+    QVector2D newSize;
     translate(primary,secondary,-coords);
-    QVector2D size = getTopLeft(primary,secondary) - getBottomRight(primary,secondary);
-    QVector2D newSize = size + transform;
-    scale(primary,secondary,newSize/size);
-
-    QVector2D newCoords;
     switch (box) {
     case  BOUND_BOX__TOP_LEFT:
-        newCoords = getBottomRight(primary, secondary);
+        size = getTopLeft(primary,secondary);
         break;
     case  BOUND_BOX__TOP_RIGHT:
-        newCoords = getBottomLeft(primary, secondary);
+        size = getTopRight(primary,secondary);
         break;
     case  BOUND_BOX__BOTTOM_RIGHT:
-        newCoords = getTopLeft(primary, secondary);
+        size = getBottomRight(primary,secondary);
         break;
     case  BOUND_BOX__BOTTOM_LEFT:
-        newCoords = getTopRight(primary, secondary);
+        size = getBottomLeft(primary,secondary);
         break;
     case  BOUND_BOX__TOP:
-        newCoords = getBottom(primary, secondary);
+        size = getTop(primary,secondary);
         break;
     case  BOUND_BOX__RIGHT:
-        newCoords = getLeft(primary, secondary);
+        size = getLeft(primary,secondary);
         break;
     case  BOUND_BOX__BOTTOM:
-        newCoords = getTop(primary, secondary);
+        size = getTop(primary,secondary);
         break;
     case  BOUND_BOX__LEFT:
-        newCoords = getRight(primary, secondary);
+        size = getRight(primary,secondary);
         break;
     default  :
         break;
     }
+    newSize = size + transform;
+    scale(primary,secondary,newSize/size);
     translate(primary,secondary,coords);
 
 }

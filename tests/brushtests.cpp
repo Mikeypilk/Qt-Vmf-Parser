@@ -96,6 +96,27 @@ void PlaneTests::testInvalid() {
 //!
 //! \brief BrushTests::testInitBrush test init
 //!
+void BrushTests::init() {
+    actual.clear();
+    expected.clear();
+    planes.clear();
+    Plane *plane;
+    planes.prepend(plane = new Plane(QVector3D(-128, 32, 128),QVector3D(128, 32, 128),QVector3D(128, 0, 128)));
+    planes.prepend(plane = new Plane(QVector3D(-128, 0, 0),QVector3D(128, 0, 0),QVector3D(128, 32, 0)));
+    planes.prepend(plane = new Plane(QVector3D(-128, 32, 128),QVector3D(-128, 0, 128),QVector3D(-128, 0, 0)));
+    planes.prepend(plane = new Plane(QVector3D(128, 32, 0),QVector3D(128, 0, 0),QVector3D(128, 0, 128)));
+    planes.prepend(plane = new Plane(QVector3D(128, 32, 128),QVector3D(-128, 32, 128),QVector3D(-128, 32, 0)));
+    planes.prepend(plane = new Plane(QVector3D(128, 0, 0),QVector3D(-128, 0, 0),QVector3D(-128, 0, 128)));
+    brush = new Brush(planes);
+}
+void BrushTests::cleanup() {
+    if (QTest::currentTestFailed()) {
+        qDebug() << "Actual Results:";
+        qDebug() << actual;
+        qDebug() << "Expected Results:";
+        qDebug() << expected;
+    }
+}
 void BrushTests::testInitBrush() {
     //    https://developer.valvesoftware.com/wiki/VMF#Planes
     QList<Plane*> planes;
@@ -155,7 +176,6 @@ void BrushTests::testCorners() {
     QCOMPARE(brush->getBottomLeft(Brush::X_AXIS, Brush::Z_AXIS).toPoint(), QPoint(-128,0));
     QCOMPARE(brush->getBottomRight(Brush::X_AXIS, Brush::Z_AXIS).toPoint(), QPoint(128,0));
 
-
     planes.clear();
     planes.prepend(plane = new Plane(QVector3D(64, 32, 256),QVector3D(256, 32, 256),QVector3D(256, 0, 256)));
     planes.prepend(plane = new Plane(QVector3D(64, 0, 0),QVector3D(256, 0, 0),QVector3D(256, 32, 0)));
@@ -190,7 +210,9 @@ void BrushTests::testEdges() {
 
     // TODO: Write more tests
 }
-
+//!
+//! \brief BrushTests::testTranslate
+//!
 void BrushTests::testTranslate() {
     QList<Plane*> planes;
     Plane *plane;
@@ -222,8 +244,10 @@ void BrushTests::testTranslate() {
 
     // TODO: Write more tests
 }
-
-void BrushTests::testRotate() {
+//!
+//! \brief BrushTests::testRotate
+//!
+void BrushTests::testRotateFullCircleXY() {
     QList<Plane*> planes;
     Plane *plane;
     planes.prepend(plane = new Plane(QVector3D(-128, 32, 128),QVector3D(128, 32, 128),QVector3D(128, 0, 128)));
@@ -234,35 +258,199 @@ void BrushTests::testRotate() {
     planes.prepend(plane = new Plane(QVector3D(128, 0, 0),QVector3D(-128, 0, 0),QVector3D(-128, 0, 128)));
     Brush *brush = new Brush(planes);
 
-    //! Rotate 90 degrees
+    //! Rotate XY AXIS
     brush->rotate(Brush::X_AXIS, Brush::Y_AXIS, 90);
     QCOMPARE(brush->getTopLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(-16,144));
     QCOMPARE(brush->getTopRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(16,144));
     QCOMPARE(brush->getBottomLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(-16,-112));
     QCOMPARE(brush->getBottomRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(16,-112));
 
-    // TODO: Write more tests
-
-}
-void BrushTests::testTransform() {
-    QList<Plane*> planes;
-    Plane *plane;
-    planes.prepend(plane = new Plane(QVector3D(-128, 32, 128),QVector3D(128, 32, 128),QVector3D(128, 0, 128)));
-    planes.prepend(plane = new Plane(QVector3D(-128, 0, 0),QVector3D(128, 0, 0),QVector3D(128, 32, 0)));
-    planes.prepend(plane = new Plane(QVector3D(-128, 32, 128),QVector3D(-128, 0, 128),QVector3D(-128, 0, 0)));
-    planes.prepend(plane = new Plane(QVector3D(128, 32, 0),QVector3D(128, 0, 0),QVector3D(128, 0, 128)));
-    planes.prepend(plane = new Plane(QVector3D(128, 32, 128),QVector3D(-128, 32, 128),QVector3D(-128, 32, 0)));
-    planes.prepend(plane = new Plane(QVector3D(128, 0, 0),QVector3D(-128, 0, 0),QVector3D(-128, 0, 128)));
-    Brush *brush = new Brush(planes);
-
-    //! i.e. Move the bounding box in the top left corner to a position -256 units away from top left and 64 above
-    brush->transform(Brush::BOUND_BOX__TOP_LEFT, Brush::X_AXIS, Brush::Y_AXIS, QVector2D(-256,64));
-    QCOMPARE(brush->getTopLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(-384,96));
-    QCOMPARE(brush->getTopRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(128,96));
-    QCOMPARE(brush->getBottomLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(-384,0));
+    brush->rotate(Brush::X_AXIS, Brush::Y_AXIS, 90);
+    QCOMPARE(brush->getTopLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(-128,32));
+    QCOMPARE(brush->getTopRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(128,32));
+    QCOMPARE(brush->getBottomLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(-128,0));
     QCOMPARE(brush->getBottomRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(128,0));
 
+    brush->rotate(Brush::X_AXIS, Brush::Y_AXIS, 90);
+    QCOMPARE(brush->getTopLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(-16,144));
+    QCOMPARE(brush->getTopRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(16,144));
+    QCOMPARE(brush->getBottomLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(-16,-112));
+    QCOMPARE(brush->getBottomRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(16,-112));
 
-    // TODO: Write more tests
-
+    brush->rotate(Brush::X_AXIS, Brush::Y_AXIS, 90);
+    QCOMPARE(brush->getTopLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(-128,32));
+    QCOMPARE(brush->getTopRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(128,32));
+    QCOMPARE(brush->getBottomLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(-128,0));
+    QCOMPARE(brush->getBottomRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(128,0));
+    QCOMPARE(brush->getTopLeft(Brush::Y_AXIS, Brush::Z_AXIS).toPoint(), QPoint(0,128));
+    QCOMPARE(brush->getTopRight(Brush::Y_AXIS, Brush::Z_AXIS).toPoint(), QPoint(32,128));
+    QCOMPARE(brush->getBottomLeft(Brush::Y_AXIS, Brush::Z_AXIS).toPoint(), QPoint(0,0));
+    QCOMPARE(brush->getBottomRight(Brush::Y_AXIS, Brush::Z_AXIS).toPoint(), QPoint(32,0));
+    QCOMPARE(brush->getTopLeft(Brush::X_AXIS, Brush::Z_AXIS).toPoint(), QPoint(-128,128));
+    QCOMPARE(brush->getTopRight(Brush::X_AXIS, Brush::Z_AXIS).toPoint(), QPoint(128,128));
+    QCOMPARE(brush->getBottomLeft(Brush::X_AXIS, Brush::Z_AXIS).toPoint(), QPoint(-128,0));
+    QCOMPARE(brush->getBottomRight(Brush::X_AXIS, Brush::Z_AXIS).toPoint(), QPoint(128,0));
 }
+void BrushTests::testRotateYZ() {
+    brush->rotate(Brush::Y_AXIS, Brush::Z_AXIS, 90);
+    QCOMPARE(brush->getTopLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(-128,80));
+    QCOMPARE(brush->getTopRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(128,80));
+    QCOMPARE(brush->getBottomLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(-128,-48));
+    QCOMPARE(brush->getBottomRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(128,-48));
+    brush->rotate(Brush::X_AXIS, Brush::Z_AXIS, 90);
+    QCOMPARE(brush->getTopLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(-16,80));
+    QCOMPARE(brush->getTopRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(16,80));
+    QCOMPARE(brush->getBottomLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(-16,-48));
+    QCOMPARE(brush->getBottomRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint(), QPoint(16,-48));
+}
+//!
+//! \brief BrushTests::testTransform_topLeft
+//!
+void BrushTests::testTransform_topLeft() {
+    expected.append(QPoint(-384,96));
+    expected.append(QPoint(128,96));
+    expected.append(QPoint(-384,0));
+    expected.append(QPoint(128,0));
+    brush->transform(Brush::BOUND_BOX__TOP_LEFT, Brush::X_AXIS, Brush::Y_AXIS, QVector2D(-256,64));
+    actual.append(brush->getTopLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    actual.append(brush->getTopRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    actual.append(brush->getBottomLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    actual.append(brush->getBottomRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    QCOMPARE(expected,actual);
+}
+//!
+//! \brief BrushTests::testTransform_topLeft_2
+//!
+void BrushTests::testTransform_topLeft_2() {
+    expected.append(QPoint(-256,16));
+    expected.append(QPoint(128,16));
+    expected.append(QPoint(-256,0));
+    expected.append(QPoint(128,0));
+    brush->transform(Brush::BOUND_BOX__TOP_LEFT, Brush::X_AXIS, Brush::Y_AXIS, QVector2D(-128,-16));
+    actual.append(brush->getTopLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    actual.append(brush->getTopRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    actual.append(brush->getBottomLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    actual.append(brush->getBottomRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    QCOMPARE(expected,actual);
+}
+//!
+//! \brief BrushTests::testTransform_topLeft_3
+//!
+void BrushTests::testTransform_topLeft_3() {
+    expected.append(QPoint(0,16));
+    expected.append(QPoint(128,16));
+    expected.append(QPoint(0,0));
+    expected.append(QPoint(128,0));
+    brush->transform(Brush::BOUND_BOX__TOP_LEFT, Brush::X_AXIS, Brush::Y_AXIS, QVector2D(128,-16));
+    actual.append(brush->getTopLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    actual.append(brush->getTopRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    actual.append(brush->getBottomLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    actual.append(brush->getBottomRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    QCOMPARE(expected,actual);
+}
+//!
+//! \brief BrushTests::testTransform_topLeft_4
+//!
+void BrushTests::testTransform_topLeft_4() {
+    expected.append(QPoint(-64,48));
+    expected.append(QPoint(128,48));
+    expected.append(QPoint(-64,0));
+    expected.append(QPoint(128,0));
+    brush->transform(Brush::BOUND_BOX__TOP_LEFT, Brush::X_AXIS, Brush::Y_AXIS, QVector2D(64,16));
+    actual.append(brush->getTopLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    actual.append(brush->getTopRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    actual.append(brush->getBottomLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    actual.append(brush->getBottomRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    QCOMPARE(expected,actual);
+}
+//!
+//! \brief BrushTests::testTransform_topRight
+//!
+void BrushTests::testTransform_topRight() {
+    expected.append(QPoint(-128,48));
+    expected.append(QPoint(256,48));
+    expected.append(QPoint(-128,0));
+    expected.append(QPoint(256,0));
+    brush->transform(Brush::BOUND_BOX__TOP_RIGHT, Brush::X_AXIS, Brush::Y_AXIS, QVector2D(128,16));
+    actual.append(brush->getTopLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    actual.append(brush->getTopRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    actual.append(brush->getBottomLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    actual.append(brush->getBottomRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    QCOMPARE(expected,actual);
+}
+//!
+//! \brief BrushTests::testTransform_topRight_2
+//!
+void BrushTests::testTransform_topRight_2() {
+    expected.append(QPoint(-128,48));
+    expected.append(QPoint(64,48));
+    expected.append(QPoint(-128,0));
+    expected.append(QPoint(64,0));
+    brush->transform(Brush::BOUND_BOX__TOP_RIGHT, Brush::X_AXIS, Brush::Y_AXIS, QVector2D(-64,16));
+    actual.append(brush->getTopLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    actual.append(brush->getTopRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    actual.append(brush->getBottomLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    actual.append(brush->getBottomRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    QCOMPARE(expected,actual);
+}
+//!
+//! \brief BrushTests::testTransform_topRight_3
+//!
+void BrushTests::testTransform_topRight_3() {
+    expected.append(QPoint(-128,16));
+    expected.append(QPoint(64,16));
+    expected.append(QPoint(-128,0));
+    expected.append(QPoint(64,0));
+    brush->transform(Brush::BOUND_BOX__TOP_RIGHT, Brush::X_AXIS, Brush::Y_AXIS, QVector2D(-64,-16));
+    actual.append(brush->getTopLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    actual.append(brush->getTopRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    actual.append(brush->getBottomLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    actual.append(brush->getBottomRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    QCOMPARE(expected,actual);
+}
+//!
+//! \brief BrushTests::testTransform_topRight_4
+//!
+void BrushTests::testTransform_topRight_4() {
+    expected.append(QPoint(-128,16));
+    expected.append(QPoint(192,16));
+    expected.append(QPoint(-128,0));
+    expected.append(QPoint(192,0));
+    brush->transform(Brush::BOUND_BOX__TOP_RIGHT, Brush::X_AXIS, Brush::Y_AXIS, QVector2D(64,-16));
+    actual.append(brush->getTopLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    actual.append(brush->getTopRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    actual.append(brush->getBottomLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    actual.append(brush->getBottomRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    QCOMPARE(expected,actual);
+}
+//!
+//! \brief BrushTests::testTransform_botLeft
+//!
+void BrushTests::testTransform_botLeft() {
+    expected.append(QPoint(-64,32));
+    expected.append(QPoint(128,32));
+    expected.append(QPoint(-64,-16));
+    expected.append(QPoint(128,-16));
+    brush->transform(Brush::BOUND_BOX__BOTTOM_LEFT, Brush::X_AXIS, Brush::Y_AXIS, QVector2D(64,-16));
+    actual.append(brush->getTopLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    actual.append(brush->getTopRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    actual.append(brush->getBottomLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    actual.append(brush->getBottomRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    QCOMPARE(expected,actual);
+}
+//!
+//! \brief BrushTests::testTransform_botRight
+//!
+void BrushTests::testTransform_botRight() {
+    expected.append(QPoint(-128,32));
+    expected.append(QPoint(192,32));
+    expected.append(QPoint(-128,-16));
+    expected.append(QPoint(192,-16));
+    brush->transform(Brush::BOUND_BOX__BOTTOM_RIGHT, Brush::X_AXIS, Brush::Y_AXIS, QVector2D(64,-16));
+    actual.append(brush->getTopLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    actual.append(brush->getTopRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    actual.append(brush->getBottomLeft(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    actual.append(brush->getBottomRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
+    QCOMPARE(expected,actual);
+}
+

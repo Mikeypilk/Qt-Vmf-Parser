@@ -50,7 +50,7 @@ public:
 class Brush
 {
     QList<Plane*> m_planes;
-
+    bool checkValid(QList<Plane*> planes);
     bool getBoundingBox();
     void setXMinMax();
     void setYMinMax();
@@ -64,7 +64,7 @@ class Brush
 
 public:
     Brush(QList<Plane*> planes);
-    bool checkValid(QList<Plane*> planes);
+
     int getNumOfSides();
     enum boundingBox {
         BOUND_BOX__TOP_LEFT,
@@ -82,8 +82,6 @@ public:
         Y_AXIS,
         Z_AXIS,
     };
-
-    void matchingVertexes(axis primary, axis secondary, QVector2D checkpos);
     QVector2D getTopLeft(axis primary, axis secondary);
     QVector2D getTopRight(axis primary, axis secondary);
     QVector2D getBottomLeft(axis primary, axis secondary);
@@ -98,7 +96,7 @@ public:
     void rotate(axis primary, axis secondary, float angle);
     void scale(axis primary, axis secondary, QVector2D travector);
 
-
+    void matchingVertexes(axis primary, axis secondary, QVector2D checkpos);
 };
 
 #endif // BRUSH_H

@@ -32,5 +32,7 @@ bool allTests::runTests() {
     //! Run Brush tests
     BrushTests brushTest;
     QTest::qExec(&brushTest);
+
+
     return 0;
 }
