@@ -1,11 +1,26 @@
+/*
+This file is part of World Editor.
+
+World Editor is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+World Editor is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with World Editor.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "viewportscene.h"
-#include <QStyleOptionGraphicsItem>
-#include <QBrush>
-#include <QTextItem>
-#include "brush.h"
 #define GRID_INCREMENT 0
 #define GRID_DECREMENT 1
-
+//!
+//! \brief ViewPortScene::ViewPortScene
+//!
 ViewPortScene::ViewPortScene()
 {
     m_scale = 8;
@@ -13,7 +28,11 @@ ViewPortScene::ViewPortScene()
     QBrush background("black");
     setBackgroundBrush(background);
 }
-
+//!
+//! \brief ViewPortScene::drawBackground
+//! \param painter
+//! \param rect
+//!
 void ViewPortScene::drawBackground(QPainter *painter, const QRectF &rect) {
 
     // Get the coordinates of the viewport rectangle;
@@ -54,19 +73,27 @@ void ViewPortScene::drawBackground(QPainter *painter, const QRectF &rect) {
         zoom = zoom * 2;
         grid = grid * 2;
     }
+    // 1024 Step Lines
     pen.setColor(QColor("dark orange").darker(200));
     drawGrid(1024,pen,painter,rect);
+    // Center cross lines
     pen.setWidth(major*2);
     pen.setColor(QColor("dark red").darker(200));
     drawGrid(16384,pen,painter,rect);
 }
-
+//!
+//! \brief ViewPortScene::drawGrid
+//! \param units
+//! \param pen
+//! \param painter
+//! \param rect
+//!
 void ViewPortScene::drawGrid(int units, QPen pen, QPainter *painter, const QRectF &rect) {
 
     qreal x1, x2, y1, y2;
     rect.getCoords(&x1,&y1,&x2,&y2);
-
     painter->setPen(pen);
+
     pen.setWidth(pen.width()*(units/8));
     int startx = roundGrid(x1, units);
     int starty = roundGrid(y1, units);
@@ -90,16 +117,27 @@ void ViewPortScene::drawGrid(int units, QPen pen, QPainter *painter, const QRect
         }
     }
 }
-
+//!
+//! \brief ViewPortScene::roundGrid rounds the input to the nearest units
+//! \param input
+//! \param units
+//! \return
+//!
 int ViewPortScene::roundGrid(int input, int units) {
     units = (units *64)-1;
     return (int)(input & ~units);
 }
-
+//!
+//! \brief ViewPortScene::setScale
+//! \param scale
+//!
 void ViewPortScene::setScale(qreal scale) {
     m_scale = scale;
 }
-
+//!
+//! \brief ViewPortScene::setGrid changes the grid depth
+//! \param step 0 for increment, 1 for decrement
+//!
 void ViewPortScene::setGrid(bool step) {
     switch(step) {
     case GRID_INCREMENT:
@@ -111,6 +149,7 @@ void ViewPortScene::setGrid(bool step) {
             m_grid = m_grid/2;
         break;
     }
+    // Causes the scene to redraw its contents
     this->invalidate(this->sceneRect());
 }
 

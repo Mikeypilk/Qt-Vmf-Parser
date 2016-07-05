@@ -1,31 +1,41 @@
+/*
+This file is part of World Editor.
 
+World Editor is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+World Editor is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with World Editor.  If not, see <http://www.gnu.org/licenses/>.
+*/
 #include "viewportview.h"
-
+//!
+//! \brief ViewPortView::ViewPortView
+//! \param parent
+//!
 ViewPortView::ViewPortView ( QWidget * parent )
     : QGraphicsView(parent) {
     m_scale = 8;
 }
-
-ViewPortView::ViewPortView (QGraphicsScene *scene, QWidget * parent)
-    : QGraphicsView(scene,parent) {
-}
-
-void ViewPortView::scrollContentsBy(int dx, int dy) {
-    QGraphicsView::scrollContentsBy(dx,dy);
-    emit(sceneMoved());
-}
-
+//!
+//! \brief ViewPortView::wheelEvent
+//! \param event
+//!
 void ViewPortView::wheelEvent(QWheelEvent * event)
 {
-    //your functionality, for example:
-    //if ctrl pressed, use original functionality
     if(event->modifiers() & Qt::ControlModifier)
     {
         QGraphicsView::wheelEvent(event);
     }
-    //otherwise, do yours
     else
     {
+        // These are same constants that hammer uses
         if(event->delta() > 0)
         {
             if((m_scale!=2)) {
@@ -39,10 +49,12 @@ void ViewPortView::wheelEvent(QWheelEvent * event)
             m_scale=m_scale*1.2;
         }
     }
+    //! Can't figure out how to do this any other way...
     releaseScale();
-
 }
-
+//!
+//! \brief ViewPortView::releaseScale
+//!
 void ViewPortView::releaseScale() {
     emit(scaleChanged(m_scale));
 }
