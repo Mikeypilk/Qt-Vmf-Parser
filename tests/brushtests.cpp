@@ -453,4 +453,37 @@ void BrushTests::testTransform_botRight() {
     actual.append(brush->getBottomRight(Brush::X_AXIS, Brush::Y_AXIS).toPoint());
     QCOMPARE(expected,actual);
 }
+//!
+//! \brief BrushTests::testMatchVertexes
+//!
+void BrushTests::testMatchVertexes() {
+    brush->matchingVertexes(Brush::X_AXIS,Brush::Y_AXIS,QVector2D(-128,32));
+    QCOMPARE(brush->m_xMatch.size(), 9);
+    QCOMPARE(brush->m_yMatch.size(), 8);
+    brush->matchingVertexes(Brush::X_AXIS,Brush::Z_AXIS,QVector2D(-128,128));
+    QCOMPARE(brush->m_xMatch.size(), 9);
+    QCOMPARE(brush->m_zMatch.size(), 9);
+    QCOMPARE(brush->m_yMatch.size(), 0);
+    brush->matchingVertexes(Brush::X_AXIS,Brush::Z_AXIS,QVector2D(-512,1024));
+    QCOMPARE(brush->m_xMatch.size(), 0);
+    QCOMPARE(brush->m_zMatch.size(), 0);
+    QCOMPARE(brush->m_yMatch.size(), 0);
+}
+//!
+//! \brief BrushTests::testTranslateVertexes
+//!
+void BrushTests::testTranslateVertexes() {
+   // Top left corner
+   brush->matchingVertexes(Brush::X_AXIS,Brush::Y_AXIS,QVector2D(-128,32));
+   QCOMPARE(brush->m_xMatch.size(), 9);
+   QCOMPARE(brush->m_yMatch.size(), 8);
+   brush->translateMyVertexes(Brush::X_AXIS, Brush::Y_AXIS, QVector2D(128, 0));
+   brush->matchingVertexes(Brush::X_AXIS, Brush::Y_AXIS, QVector2D(-128, 32));
+   QCOMPARE(brush->m_xMatch.size(), 4);
+   QCOMPARE(brush->m_yMatch.size(), 8);
+   brush->matchingVertexes(Brush::X_AXIS, Brush::Y_AXIS, QVector2D(0, 32));
+   QCOMPARE(brush->m_xMatch.size(), 5);
+   QCOMPARE(brush->m_yMatch.size(), 8);
+}
+
 

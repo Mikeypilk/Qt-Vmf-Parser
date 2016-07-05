@@ -19,9 +19,9 @@ along with World Editor.  If not, see <http://www.gnu.org/licenses/>.
 #define PI 3.14159265
 //!
 //! \brief Plane::Plane Contruct a plane with 3 vertex
-//! \param bot_left - Defines the bottom left vertex
+//! \param top_left - Defines the bottom left vertex - Defines the bottom left vertex
 //! \param top_left - Defines the top left vertex
-//! \param top_right - Defines the top right vertex
+//! \param top_left - Defines the top right vertex - Defines the top right vertex
 //!
 Plane::Plane(QVector3D bot_left, QVector3D top_left, QVector3D top_right) {
     if(!checkValid(bot_left, top_left, top_right)) {
@@ -31,22 +31,34 @@ Plane::Plane(QVector3D bot_left, QVector3D top_left, QVector3D top_right) {
     }
 }
 //!
+//! \brief getVertexes returns pointers to vertexes for editing
+//! Remember to validate the vertexes when using this!
+//! \return
+//!
+QList<QVector3D*> Plane::getVertexes() {
+    QList<QVector3D*> list;
+    list.append(&m_bot_left);
+    list.append(&m_top_left);
+    list.append(&m_top_right);
+    return list;
+};
+//!
 //! \brief Plane::setBotLeft
-//! \param bot_left
+//! \param top_left - Defines the bottom left vertex
 //!
 void Plane::setBotLeft(QVector3D bot_left) {
         m_bot_left = bot_left;
 }
 //!
 //! \brief Plane::setTopRight
-//! \param top_right
+//! \param top_left - Defines the top right vertex
 //!
 void Plane::setTopRight(QVector3D top_right) {
         m_top_right = top_right;
 }
 //!
 //! \brief Plane::setTopLeft
-//! \param top_left
+//! \param top_left - Defines the top left vertex
 //!
 void Plane::setTopLeft(QVector3D top_left) {
         m_top_left = top_left;
@@ -75,9 +87,9 @@ QVector3D Plane::getTopLeft() {
 
 //!
 //! \brief Plane::checkValid check that each vertex is unique
-//! \param bot_left
-//! \param top_left
-//! \param top_right
+//! \param top_left - Defines the bottom left vertex
+//! \param top_left - Defines the top left vertex
+//! \param top_left - Defines the top right vertex
 //! \return
 //!
 bool Plane::checkValid(QVector3D bot_left, QVector3D top_left, QVector3D top_right) {
@@ -103,7 +115,7 @@ Brush::Brush(QList<Plane *> planes) {
 //! The whole system relies on the fact that you cant have more than one face
 //! on the same plane, this iterates the entire list of planes to check this.
 //! \param planes
-//! \return
+//! \return 1 for error
 //!
 bool Brush::checkValid(QList<Plane*> planes) {
     Plane *plane;
@@ -130,7 +142,7 @@ bool Brush::checkValid(QList<Plane*> planes) {
 }
 //!
 //! \brief Brush::getNumOfSides
-//! \return
+//! \return Number of planes in the brush
 //!
 int Brush::getNumOfSides() {
     return m_planes.size();
@@ -233,8 +245,8 @@ bool Brush::getBoundingBox() {
 }
 //!
 //! \brief Brush::getTopLeft
-//! \param primary
-//! \param secondary
+//! \param primary - The arbitrary horizontal axis in a 2D view
+//! \param secondary - The arbitrary vertical axis in a 2D view
 //! \return
 //!
 QVector2D Brush::getTopLeft(axis primary, axis secondary) {
@@ -275,8 +287,8 @@ QVector2D Brush::getTopLeft(axis primary, axis secondary) {
 }
 //!
 //! \brief Brush::getTopRight
-//! \param primary
-//! \param secondary
+//! \param primary - The arbitrary horizontal axis in a 2D view
+//! \param secondary - The arbitrary vertical axis in a 2D view
 //! \return
 //!
 QVector2D Brush::getTopRight(axis primary, axis secondary) {
@@ -317,8 +329,8 @@ QVector2D Brush::getTopRight(axis primary, axis secondary) {
 }
 //!
 //! \brief Brush::getBottomLeft
-//! \param primary
-//! \param secondary
+//! \param primary - The arbitrary horizontal axis in a 2D view
+//! \param secondary - The arbitrary vertical axis in a 2D view
 //! \return
 //!
 QVector2D Brush::getBottomLeft(axis primary, axis secondary) {
@@ -359,8 +371,8 @@ QVector2D Brush::getBottomLeft(axis primary, axis secondary) {
 }
 //!
 //! \brief Brush::getBottomRight
-//! \param primary
-//! \param secondary
+//! \param primary - The arbitrary horizontal axis in a 2D view
+//! \param secondary - The arbitrary vertical axis in a 2D view
 //! \return
 //!
 QVector2D Brush::getBottomRight(axis primary, axis secondary) {
@@ -400,9 +412,9 @@ QVector2D Brush::getBottomRight(axis primary, axis secondary) {
     return vec;
 }
 //!
-//! \brief Brush::getBottom i.e. the center between bottom left and right
-//! \param primary
-//! \param secondary
+//! \brief Brush::getBottom
+//! \param primary - The arbitrary horizontal axis in a 2D view
+//! \param secondary - The arbitrary vertical axis in a 2D view
 //! \return
 //!
 QVector2D Brush::getBottom(axis primary, axis secondary) {
@@ -412,8 +424,8 @@ QVector2D Brush::getBottom(axis primary, axis secondary) {
 }
 //!
 //! \brief Brush::getTop
-//! \param primary
-//! \param secondary
+//! \param primary - The arbitrary horizontal axis in a 2D view
+//! \param secondary - The arbitrary vertical axis in a 2D view
 //! \return
 //!
 QVector2D Brush::getTop(axis primary, axis secondary) {
@@ -423,8 +435,8 @@ QVector2D Brush::getTop(axis primary, axis secondary) {
 }
 //!
 //! \brief Brush::getLeft
-//! \param primary
-//! \param secondary
+//! \param primary - The arbitrary horizontal axis in a 2D view
+//! \param secondary - The arbitrary vertical axis in a 2D view
 //! \return
 //!
 QVector2D Brush::getLeft(axis primary, axis secondary) {
@@ -434,8 +446,8 @@ QVector2D Brush::getLeft(axis primary, axis secondary) {
 }
 //!
 //! \brief Brush::getRight
-//! \param primary
-//! \param secondary
+//! \param primary - The arbitrary horizontal axis in a 2D view
+//! \param secondary - The arbitrary vertical axis in a 2D view
 //! \return
 //!
 QVector2D Brush::getRight(axis primary, axis secondary) {
@@ -444,16 +456,20 @@ QVector2D Brush::getRight(axis primary, axis secondary) {
     return (bottomRight + topRight) / 2;
 }
 //!
-//! \brief Brush::translate
-//! \param box
-//! \param primary
-//! \param secondary
-//! \param transform
-
+//! \brief Brush::getCenter
+//! \param primary - The arbitrary horizontal axis in a 2D view
+//! \param secondary - The arbitrary vertical axis in a 2D view
+//! \return
+//!
 QVector2D Brush::getCenter(axis primary, axis secondary) {
     return ((getBottom(primary,secondary) + getTop(primary,secondary)) / 2);
 }
-
+//!
+//! \brief Brush::translate
+//! \param primary - The arbitrary horizontal axis in a 2D view
+//! \param secondary - The arbitrary vertical axis in a 2D view
+//! \param transform
+//!
 void Brush::translate(axis primary, axis secondary, QVector2D transform) {
     QMatrix4x4 matrix;
     switch (primary) {
@@ -491,9 +507,9 @@ void Brush::translate(axis primary, axis secondary, QVector2D transform) {
 }
 //!
 //! \brief Brush::rotate
-//! \param primary
-//! \param secondary
-//! \param rotation
+//! \param primary - The arbitrary horizontal axis in a 2D view
+//! \param secondary - The arbitrary vertical axis in a 2D view
+//! \param angle
 //!
 void Brush::rotate(axis primary, axis secondary, float angle) {
 
@@ -548,34 +564,34 @@ void Brush::rotate(axis primary, axis secondary, float angle) {
 }
 //!
 //! \brief Brush::scale
-//! \param primary
-//! \param secondary
-//! \param travector
+//! \param primary - The arbitrary horizontal axis in a 2D view
+//! \param secondary - The arbitrary vertical axis in a 2D view
+//! \param scaleFactor
 //!
-void Brush::scale(axis primary, axis secondary, QVector2D travector) {
+void Brush::scale(axis primary, axis secondary, QVector2D scaleFactor) {
     QMatrix4x4 matrix;
     switch (primary) {
     case X_AXIS:
-        matrix.scale(travector.x(),1,1);
+        matrix.scale(scaleFactor.x(),1,1);
         break;
     case Y_AXIS:
-        matrix.scale(1, travector.x(), 1);
+        matrix.scale(1, scaleFactor.x(), 1);
         break;
     case Z_AXIS:
-        matrix.scale(1, 1, travector.x());
+        matrix.scale(1, 1, scaleFactor.x());
         break;
     default:
         break;
     }
     switch (secondary) {
     case X_AXIS:
-        matrix.scale(travector.y(), 1, 1);
+        matrix.scale(scaleFactor.y(), 1, 1);
         break;
     case Y_AXIS:
-        matrix.scale(1, travector.y(), 1);
+        matrix.scale(1, scaleFactor.y(), 1);
         break;
     case Z_AXIS:
-        matrix.scale(1, 1, travector.y());
+        matrix.scale(1, 1, scaleFactor.y());
         break;
     default:
         break;
@@ -588,16 +604,9 @@ void Brush::scale(axis primary, axis secondary, QVector2D travector) {
     }
 }
 //!
-//! \brief Brush::transform
-//! \param corner
-//! \param primary
-//! \param secondary
-//! \param newpos
-//!
 void Brush::transform(boundingBox box, axis primary, axis secondary, QVector2D transform) {
 
     QVector2D coords;
-    QVector2D myCoords;
     switch (box) {
     case  BOUND_BOX__TOP_LEFT:
         coords = getBottomRight(primary, secondary);
@@ -626,9 +635,8 @@ void Brush::transform(boundingBox box, axis primary, axis secondary, QVector2D t
     default  :
         break;
     }
-    QVector2D size;
-    QVector2D newSize;
     translate(primary,secondary,-coords);
+    QVector2D size;
     switch (box) {
     case  BOUND_BOX__TOP_LEFT:
         size = getTopLeft(primary,secondary);
@@ -654,13 +662,133 @@ void Brush::transform(boundingBox box, axis primary, axis secondary, QVector2D t
     case  BOUND_BOX__LEFT:
         size = getRight(primary,secondary);
         break;
-    default  :
+    default:
         break;
     }
-    newSize = size + transform;
+    QVector2D newSize = size + transform;
     scale(primary,secondary,newSize/size);
     translate(primary,secondary,coords);
-
 }
 
+//!
+//! \brief Brush::matchingVertexes
+//! \param primary - The arbitrary horizontal axis in a 2D view
+//! \param secondary - The arbitrary vertical axis in a 2D view
+//! \param checkpos
+//!
+void  Brush::matchingVertexes(axis primary, axis secondary, QVector2D checkpos) {
 
+    m_xMatch.clear();
+    m_yMatch.clear();
+    m_zMatch.clear();
+
+    Plane *pla;
+    axis thisAxis = X_AXIS;
+    for(int i=0; i<2; i++) {
+        qreal check;
+        if (0==i)
+            thisAxis = primary;
+        if (1==i)
+            thisAxis = secondary;
+        switch (thisAxis) {
+        case X_AXIS:
+            if(1==i) {
+                check = checkpos.y();
+            }
+            else {
+                check = checkpos.x();
+            }
+            foreach(pla,m_planes) {
+                QList<QVector3D*> list = pla->getVertexes();
+                if(pla->getTopLeft().x()==check)
+                    m_xMatch.append(list.at(0));
+                if(pla->getBotLeft().x()==check)
+                    m_xMatch.append(list.at(1));
+                if(pla->getTopRight().x()==check)
+                    m_xMatch.append(list.at(2));
+            }
+            break;
+        case Y_AXIS:
+            if(1==i) {
+                check = checkpos.y();
+            }
+            else {
+                check = checkpos.x();
+            }
+            foreach(pla,m_planes) {
+                QList<QVector3D*> list = pla->getVertexes();
+                if(pla->getTopLeft().y()==check)
+                    m_yMatch.append(list.at(0));
+                if(pla->getBotLeft().y()==check)
+                    m_yMatch.append(list.at(1));
+                if(pla->getTopRight().y()==check)
+                    m_yMatch.append(list.at(2));
+            }
+            break;
+        case Z_AXIS:
+            if(1==i) {
+                check = checkpos.y();
+            }
+            else {
+                check = checkpos.x();
+            }
+            foreach(pla,m_planes) {
+                QList<QVector3D*> list = pla->getVertexes();
+                if(pla->getTopLeft().z()==check)
+                    m_zMatch.append(list.at(0));
+                if(pla->getBotLeft().z()==check)
+                    m_zMatch.append(list.at(1));
+                if(pla->getTopRight().z()==check)
+                    m_zMatch.append(list.at(2));
+            }
+            break;
+        default:
+            break;
+        }
+    }
+}
+//!
+//! \brief Brush::translateMyVertexes
+//! \param primary - The arbitrary horizontal axis in a 2D view
+//! \param secondary - The arbitrary vertical axis in a 2D view
+//! \param transform
+//!
+void  Brush::translateMyVertexes(axis primary, axis secondary, QVector2D transform) {
+    QMatrix4x4 matrix;
+    switch (primary) {
+    case X_AXIS:
+        matrix.translate(transform.x(), 0, 0);
+        break;
+    case Y_AXIS:
+        matrix.translate(0, transform.x(), 0);
+        break;
+    case Z_AXIS:
+        matrix.translate(0, 0, transform.x());
+        break;
+    default:
+        break;
+    }
+    switch (secondary) {
+    case X_AXIS:
+        matrix.translate(transform.y(), 0, 0);
+        break;
+    case Y_AXIS:
+        matrix.translate(0, transform.y(), 0);
+        break;
+    case Z_AXIS:
+        matrix.translate(0, 0, transform.y());
+        break;
+    default:
+        break;
+    }
+    QVector3D *vec;
+    foreach(vec, m_xMatch) {
+        vec->setX(matrix.map(QVector3D(vec->x(),0,0)).x());
+    }
+    foreach(vec, m_yMatch) {
+        vec->setY(matrix.map(QVector3D(0,vec->y(),0)).y());
+    }
+    foreach(vec, m_zMatch) {
+        vec->setZ(matrix.map(QVector3D(0,0,vec->z())).z());
+    }
+}

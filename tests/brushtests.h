@@ -58,6 +58,8 @@ private slots:
     void testTransform_topRight_4();
     void testTransform_botLeft();
     void testTransform_botRight();
+    void testMatchVertexes();
+    void testTranslateVertexes();
 
 };
 

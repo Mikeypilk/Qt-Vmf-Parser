@@ -58,10 +58,6 @@ class Brush
     QPointF m_x_max_min;
     QPointF m_y_max_min;
     QPointF m_z_max_min;
-    QList<QVector3D*> xMatch;
-    QList<QVector3D*> yMatch;
-    QList<QVector3D*> zMatch;
-
 public:
     Brush(QList<Plane*> planes);
 
@@ -82,6 +78,9 @@ public:
         Y_AXIS,
         Z_AXIS,
     };
+    QList<QVector3D*> m_xMatch;
+    QList<QVector3D*> m_yMatch;
+    QList<QVector3D*> m_zMatch;
     QVector2D getTopLeft(axis primary, axis secondary);
     QVector2D getTopRight(axis primary, axis secondary);
     QVector2D getBottomLeft(axis primary, axis secondary);
@@ -95,8 +94,9 @@ public:
     void transform(boundingBox box, axis primary, axis secondary, QVector2D transform);
     void rotate(axis primary, axis secondary, float angle);
     void scale(axis primary, axis secondary, QVector2D travector);
-
     void matchingVertexes(axis primary, axis secondary, QVector2D checkpos);
+    void translateMyVertexes(axis primary, axis secondary, QVector2D transform);
+
 };
 
 #endif // BRUSH_H
