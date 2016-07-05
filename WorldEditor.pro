@@ -16,12 +16,16 @@ SOURCES += main.cpp\
         mainwindow.cpp \
         tests/alltests.cpp \
     brush.cpp \
-    tests/brushtests.cpp
+    tests/brushtests.cpp \
+    viewportscene.cpp \
+    viewportview.cpp
 
 HEADERS  += mainwindow.h \
         tests/alltests.h \
     brush.h \
-    tests/brushtests.h
+    tests/brushtests.h \
+    viewportscene.h \
+    viewportview.h
 
 FORMS    += mainwindow.ui
 
