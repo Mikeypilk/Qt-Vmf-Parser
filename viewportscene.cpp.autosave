@@ -32,10 +32,10 @@ ViewPortScene::ViewPortScene()
     QGraphicsRectItem *rect = new QGraphicsRectItem;
     rect->setRect(0,0,1024,1024);
     rect->setPen(pen);
-     blocks.addToGroup(rect);
-     this->addItem(&blocks);
-     blocks.show();
-     setScale(8);
+    blocks.addToGroup(rect);
+    this->addItem(&blocks);
+    blocks.show();
+    setScale(8);
 }
 //!
 //! \brief ViewPortScene::drawBackground
