@@ -23,6 +23,8 @@ along with World Editor.  If not, see <http://www.gnu.org/licenses/>.
 #include <QVector3D>
 #include <QVector2D>
 #include <QMatrix4x4>
+#include <limits.h>
+#include <values.h>
 //!
 //! \brief The Plane class represents a 2D plane
 //!
