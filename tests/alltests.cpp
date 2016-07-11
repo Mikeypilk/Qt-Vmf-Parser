@@ -33,6 +33,8 @@ bool allTests::runTests() {
     BrushTests brushTest;
     QTest::qExec(&brushTest);
 
+    ControllerTests controlTest;
+    QTest::qExec(&controlTest);
 
     return 0;
 }

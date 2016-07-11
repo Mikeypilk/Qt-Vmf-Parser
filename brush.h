@@ -98,6 +98,7 @@ public:
     void scale(axis primary, axis secondary, QVector2D travector);
     void matchingVertexes(axis primary, axis secondary, QVector2D checkpos);
     void translateMyVertexes(axis primary, axis secondary, QVector2D transform);
+    QList<Plane*> getPlanes();
 
 };
 

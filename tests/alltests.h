@@ -20,6 +20,7 @@ along with World Editor.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <QObject>
 #include "tests/brushtests.h"
+#include "tests/controllertests.h"
 
 
 class allTests : public QObject

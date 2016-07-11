@@ -1,11 +1,16 @@
 #ifndef CONTROLLERTESTS_H
 #define CONTROLLERTESTS_H
 
+#include <QObject>
+#include <QTest>
 
-class ControllerTests
+class ControllerTests : public QObject
 {
+    Q_OBJECT
 public:
-  ControllerTests();
+  void init();
+  void cleanup();
+  void testTranslate();
 };
 
 #endif // CONTROLLERTESTS_H

@@ -21,7 +21,9 @@ along with World Editor.  If not, see <http://www.gnu.org/licenses/>.
 #include <QPainter>
 #include <QGraphicsItem>
 #include <QGraphicsRectItem>
+#include <QGraphicsLineItem>
 #include <QGraphicsItemGroup>
+#include "brush.h"
 //!
 //! \brief The ViewPortScene class
 //! The view port for editing the 3d brushes in 2 dimensions
@@ -30,7 +32,7 @@ class ViewPortScene : public QGraphicsScene
 {
     Q_OBJECT
     int roundGrid(int input, int units);
-    QGraphicsItemGroup blocks;
+    QGraphicsItemGroup brushes;
 
 public:
     ViewPortScene();
@@ -38,6 +40,13 @@ public:
     int m_default_size;
     qreal m_scale;
     int m_grid;
+
+    Brush *m_brush;
+    Brush::axis m_primary;
+    Brush::axis m_secondary;
+    void addBrush(Brush *brush);
+
+
 
 private:
     void drawGrid(int units, QPen pen, QPainter *painter, const QRectF &rect);

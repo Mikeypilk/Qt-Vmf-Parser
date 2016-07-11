@@ -1,6 +1,13 @@
 #include "controllertests.h"
 
-ControllerTests::ControllerTests()
-{
+void ControllerTests::init() {
+
+}
+
+void ControllerTests::cleanup() {
+
+}
+
+void ControllerTests::testTranslate() {
 
 }
