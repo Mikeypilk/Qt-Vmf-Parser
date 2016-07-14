@@ -60,7 +60,6 @@ ViewPortScene::ViewPortScene()
   planes.prepend(plane = new Plane(QVector3D(128, 16, 16),QVector3D(64, 16, 16),QVector3D(64, 16, 128)));
   Brush brush(planes);
 
-
   addBrush(&brush);
 
   setScale(m_scale);
@@ -203,17 +202,19 @@ void ViewPortScene::addBrush(Brush *brush) {
   QList<Plane*> planes = brush->getPlanes();
   QGraphicsLineItem *line;
   QPen red(QColor("red"));
-  #define SMALL_NUM   0.00001
+#define SMALL_NUM   0.00001
 
   foreach(Plane *pla1, planes) {
+    QVector<QPointF> list;
+    QVector<QPointF> points;
+
     foreach(Plane *pla2, planes) {
       QVector3D Pn1 = QVector3D::normal(pla1->getTopRight(), pla1->getTopLeft(), pla1->getBotLeft() );
       QVector3D Po1 = pla1->getTopRight();
-
       QVector3D Pn2 = QVector3D::normal(pla2->getTopRight(), pla2->getTopLeft(), pla2->getBotLeft() );
       QVector3D Po2 = pla2->getTopLeft();
-
       QVector3D   u = QVector3D::crossProduct(Pn1, Pn2);          // cross product
+
       float    ax = (u.x() >= 0 ? u.x() : -u.x());
       float    ay = (u.y() >= 0 ? u.y() : -u.y());
       float    az = (u.z() >= 0 ? u.z() : -u.z());
@@ -232,7 +233,64 @@ void ViewPortScene::addBrush(Brush *brush) {
         }
       }
       qDebug() << "Pn1 and Pn2 are connected";
+      if(pla2->getBotLeft().distanceToPlane(pla1->getBotLeft(), pla1->getTopLeft(), pla1->getTopRight()) == 0)
+        list.append( QPointF(pla2->getBotLeft().x(), pla2->getBotLeft().y()) );
+      if(pla2->getTopLeft().distanceToPlane(pla1->getBotLeft(), pla1->getTopLeft(), pla1->getTopRight()) == 0)
+        list.append( QPointF(pla2->getTopLeft().x(), pla2->getTopLeft().y()) );
+      if(pla2->getTopRight().distanceToPlane(pla1->getBotLeft(), pla1->getTopLeft(), pla1->getTopRight()) == 0)
+        list.append( QPointF(pla2->getTopRight().x(), pla2->getTopRight().y()) );
+
     }
+
+
+    list.removeAll(QPointF(pla1->getBotLeft().x(), pla1->getBotLeft().y()));
+    list.removeAll(QPointF(pla1->getTopLeft().x(), pla1->getTopLeft().y()));
+    list.removeAll(QPointF(pla1->getTopRight().x(), pla1->getTopRight().y()));
+
+    if(!list.empty()) {
+      foreach(QPointF point, list) {
+        if(list.contains(point)) {
+          list.removeAll(point);
+          list.append(point);
+        }
+      }
+    }
+    points.append(QPointF(pla1->getBotLeft().x(), pla1->getBotLeft().y()));
+    points.append(QPointF(pla1->getTopLeft().x(), pla1->getTopLeft().y()));
+    points.append(QPointF(pla1->getTopRight().x(), pla1->getTopRight().y()));
+    for(int i = 0; i < list.size(); i++) {
+      float distance = MAXFLOAT;
+      QVector2D thisPoint;
+      QVector2D nextPoint;
+      foreach(QPointF point, list) {
+        float lo_distance;
+        if (i == 0) { // we are looking for the first point
+          thisPoint = QVector2D(pla1->getTopRight().x(), pla1->getTopRight().y());
+        }
+        else { // then for each subsequent point
+          thisPoint = nextPoint;
+        }
+        lo_distance = thisPoint.distanceToPoint(QVector2D(point.x(),point.y()));
+        if(lo_distance < distance) {
+          nextPoint = QVector2D(point.x(),point.y());
+          list.removeOne(point);
+        }
+      }
+      points.append(QPointF(nextPoint.x(), nextPoint.y()));
+    }
+    if(!points.empty()) {
+      foreach(QPointF point, points) {
+        if(points.contains(point)) {
+          points.removeAll(point);
+          points.append(point);
+        }
+      }
+    }
+
+    //      QPolygonF poly(points);
+    //      qDebug() << poly.toList();
+
+    qDebug() << points;
     qDebug() << "------------------------------";
   }
 }
