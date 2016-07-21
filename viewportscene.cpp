@@ -52,16 +52,16 @@ ViewPortScene::ViewPortScene()
   planes.prepend(plane = new Plane(QVector3D(128, 0, 0),QVector3D(-128, 0, 0),QVector3D(-128, 0, 128)));
   Brush brush(planes);
 
-  //  planes.prepend(plane = new Plane(QVector3D(64, 32, 128),QVector3D(128, 32, 128),QVector3D(128, 16, 128)));
-  //  planes.prepend(plane = new Plane(QVector3D(64, 16, 16),QVector3D(128, 16, 16),QVector3D(128, 32, 16)));
-  //  planes.prepend(plane = new Plane(QVector3D(64, 32, 128),QVector3D(64, 16, 128),QVector3D(64, 16, 16)));
-  //  planes.prepend(plane = new Plane(QVector3D(128, 32, 16),QVector3D(128, 16, 16),QVector3D(128, 16, 128)));
-  //  planes.prepend(plane = new Plane(QVector3D(128, 32, 128),QVector3D(64, 32, 128),QVector3D(64, 32, 16)));
-  //  planes.prepend(plane = new Plane(QVector3D(128, 16, 16),QVector3D(64, 16, 16),QVector3D(64, 16, 128)));
-  //  Brush brush(planes);
+//    planes.prepend(plane = new Plane(QVector3D(64, 32, 128),QVector3D(128, 32, 128),QVector3D(128, 16, 128)));
+//    planes.prepend(plane = new Plane(QVector3D(64, 16, 16),QVector3D(128, 16, 16),QVector3D(128, 32, 16)));
+//    planes.prepend(plane = new Plane(QVector3D(64, 32, 128),QVector3D(64, 16, 128),QVector3D(64, 16, 16)));
+//    planes.prepend(plane = new Plane(QVector3D(128, 32, 16),QVector3D(128, 16, 16),QVector3D(128, 16, 128)));
+//    planes.prepend(plane = new Plane(QVector3D(128, 32, 128),QVector3D(64, 32, 128),QVector3D(64, 32, 16)));
+//    planes.prepend(plane = new Plane(QVector3D(128, 16, 16),QVector3D(64, 16, 16),QVector3D(64, 16, 128)));
+//    Brush brush(planes);
 
+  brush.rotate(Brush::X_AXIS, Brush::Z_AXIS, 45);
   brush.rotate(Brush::Y_AXIS, Brush::Z_AXIS, 45);
-
   addBrush(&brush);
 
   setScale(m_scale);
@@ -233,15 +233,15 @@ void ViewPortScene::addBrush(Brush *brush) {
       qDebug() << "Pn1 and Pn2 are connected";
       if(pla2->getBotLeft().distanceToPlane(pla1->getBotLeft(),
                                             pla1->getTopLeft(),
-                                            pla1->getTopRight()) == 0)
+                                            pla1->getTopRight()) < 0.01)
         list.append( QPointF(pla2->getBotLeft().x(), pla2->getBotLeft().y()) );
       if(pla2->getTopLeft().distanceToPlane(pla1->getBotLeft(),
                                             pla1->getTopLeft(),
-                                            pla1->getTopRight()) == 0)
+                                            pla1->getTopRight()) < 0.01)
         list.append( QPointF(pla2->getTopLeft().x(), pla2->getTopLeft().y()) );
       if(pla2->getTopRight().distanceToPlane(pla1->getBotLeft(),
                                              pla1->getTopLeft(),
-                                             pla1->getTopRight()) == 0)
+                                             pla1->getTopRight()) < 0.01)
         list.append( QPointF(pla2->getTopRight().x(), pla2->getTopRight().y()) );
     }
 
@@ -263,18 +263,21 @@ void ViewPortScene::addBrush(Brush *brush) {
     points.append(QPointF(pla1->getTopLeft().x(), pla1->getTopLeft().y()));
     points.append(QPointF(pla1->getTopRight().x(), pla1->getTopRight().y()));
     for(int i = 0; i < list.size(); i++) {
-      float distance = MAXFLOAT;
+      float distance = FLT_MAX;
       QVector2D thisPoint;
+      QVector2D thisDir;
       QVector2D nextPoint;
       foreach(QPointF point, list) {
         float lo_distance;
         if (i == 0) { // we are looking for the first point
           thisPoint = QVector2D(pla1->getTopRight().x(), pla1->getTopRight().y());
+          thisDir = QVector2D (pla1->getTopLeft() ) - QVector2D ( pla1->getTopRight() );
         }
         else { // then for each subsequent point
+          thisDir = thisPoint - nextPoint;
           thisPoint = nextPoint;
         }
-        lo_distance = thisPoint.distanceToPoint(QVector2D(point.x(),point.y()));
+        lo_distance = thisPoint.distanceToLine(QVector2D(point.x(),point.y()), thisDir);
         if(lo_distance < distance) {
           nextPoint = QVector2D(point.x(),point.y());
           list.removeOne(point);
