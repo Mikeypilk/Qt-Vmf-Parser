@@ -107,7 +107,7 @@ bool Plane::checkValid(QVector3D bot_left, QVector3D top_left, QVector3D top_rig
 //! \param planes
 //!
 Brush::Brush(QList<Plane *> planes) {
-  if(!checkValid(planes))
+  //if(!checkValid(planes))
     m_planes = planes;
 }
 //!

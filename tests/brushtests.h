@@ -60,6 +60,7 @@ private slots:
     void testTransform_botRight();
     void testMatchVertexes();
     void testTranslateVertexes();
+    void testInitBrushOctagonal();
 
 };
 
