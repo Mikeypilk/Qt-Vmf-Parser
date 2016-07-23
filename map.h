@@ -36,8 +36,7 @@ class Map : public QAbstractItemModel
 
 public:
     enum MapRoles {
-        //! A list of the polygons this brush makes up
-        PolygonRole = Qt::UserRole + 1,
+        BrushRole = Qt::UserRole + 1,
     };
 
     Map(QObject *parent = 0);
@@ -47,6 +46,7 @@ public:
     int rowCount(const QModelIndex & parent = QModelIndex()) const;
     QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
     void addBrush(const Brush &newBrush);
+
 
 };
 

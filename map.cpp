@@ -67,15 +67,14 @@ int Map::rowCount(const QModelIndex & parent) const {
 QVariant Map::data(const QModelIndex & index, int role) const {
     if (index.row() < 0 || index.row() >= m_brushes.count())
         return QVariant();
-    /*
-    const Brush &brush = m_brushes[index.row()];
-    if (role == PolyRole?)
-        return brush;
-    else if (role == ColourRole?)
-        return brush.colour();
 
-    */
-    return QString("hello");
+    const Brush &brush = m_brushes[index.row()];
+
+    if (role == BrushRole) {
+        QVariant v;
+        v.setValue(brush);
+        return v;
+    }
 }
 //!
 //! \brief Map::addBrush

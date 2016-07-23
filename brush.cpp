@@ -16,6 +16,7 @@ along with World Editor.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "brush.h"
+#include "polygoniser.h"
 #define PI 3.14159265
 //!
 //! \brief Plane::Plane Contruct a plane with 3 vertex
@@ -102,6 +103,11 @@ bool Plane::checkValid(QVector3D bot_left, QVector3D top_left, QVector3D top_rig
   else
     return 0;
 }
+
+Brush::Brush() {
+
+}
+
 //!
 //! \brief Brush::Brush
 //! \param planes
@@ -798,4 +804,8 @@ void  Brush::translateMyVertexes(axis primary, axis secondary, QVector2D transfo
 //!
 QList<Plane*> Brush::getPlanes() {
   return m_planes;
+}
+
+QList<QPolygonF> Brush::polygonise(axis primary, axis secondary) {
+    return Polygoniser::poligonise(this, primary, secondary);
 }

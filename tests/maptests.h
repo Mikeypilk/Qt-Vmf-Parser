@@ -29,6 +29,7 @@ class MapTests : public QObject
 private slots:
   void init();
   void testInsertBrush();
+  void testReturnBrush();
 
 };
 

@@ -67,6 +67,7 @@ class Brush
     QPointF m_y_max_min;
     QPointF m_z_max_min;
 public:
+    Brush();
     Brush(QList<Plane*> planes);
     int getNumOfSides();
     enum boundingBox {
@@ -84,6 +85,7 @@ public:
     QList<QVector3D*> m_xMatch;
     QList<QVector3D*> m_yMatch;
     QList<QVector3D*> m_zMatch;
+
     QVector2D getTopLeft(axis primary, axis secondary);
     QVector2D getTopRight(axis primary, axis secondary);
     QVector2D getBottomLeft(axis primary, axis secondary);
@@ -100,7 +102,9 @@ public:
     void matchingVertexes(axis primary, axis secondary, QVector2D checkpos);
     void translateMyVertexes(axis primary, axis secondary, QVector2D transform);
     QList<Plane*> getPlanes();
+    QList<QPolygonF> polygonise(axis primary, axis secondary);
 
 };
 
+Q_DECLARE_METATYPE(Brush)
 #endif // BRUSH_H

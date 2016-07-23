@@ -16,6 +16,7 @@ along with World Editor.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "maptests.h"
+#include "QSignalSpy"
 
 
 void MapTests::init() {
@@ -25,6 +26,7 @@ void MapTests::init() {
 void MapTests::testInsertBrush() {
 
     Map newMap;
+    QSignalSpy spy(&newMap, SIGNAL(rowsInserted(QModelIndex,int,int)));
 
     Plane *plane;
     QList<Plane*> planes;
@@ -37,6 +39,25 @@ void MapTests::testInsertBrush() {
     Brush brush(planes);
     newMap.addBrush(brush);
 
-    qDebug() << newMap.index(0,0).data(Map::PolygonRole);
+    QCOMPARE(spy.count(), 1); // make sure the signal was emitted exactly one time
+}
+
+void MapTests::testReturnBrush() {
+
+    Map newMap;
+    Plane *plane;
+    QList<Plane*> planes;
+    planes.prepend(plane = new Plane(QVector3D(-128, 32, 128),QVector3D(128, 32, 128),QVector3D(128, 0, 128)));
+    planes.prepend(plane = new Plane(QVector3D(-128, 0, 0),QVector3D(128, 0, 0),QVector3D(128, 32, 0)));
+    planes.prepend(plane = new Plane(QVector3D(-128, 32, 128),QVector3D(-128, 0, 128),QVector3D(-128, 0, 0)));
+    planes.prepend(plane = new Plane(QVector3D(128, 32, 0),QVector3D(128, 0, 0),QVector3D(128, 0, 128)));
+    planes.prepend(plane = new Plane(QVector3D(128, 32, 128),QVector3D(-128, 32, 128),QVector3D(-128, 32, 0)));
+    planes.prepend(plane = new Plane(QVector3D(128, 0, 0),QVector3D(-128, 0, 0),QVector3D(-128, 0, 128)));
+    Brush brush(planes);
+    newMap.addBrush(brush);
+
+    QVariant output = newMap.index(0,0).data(Map::BrushRole);
+    Brush s2 = output.value<Brush>();
+    QCOMPARE(s2.getCenter(X_AXIS, Y_AXIS), QVector2D(0,16));
 
 }
