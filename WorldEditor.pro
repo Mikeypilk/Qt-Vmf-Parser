@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     map.cpp \
     tests/maptests.cpp \
     polygoniser.cpp \
-    tests/polygontests.cpp
+    tests/polygontests.cpp \
+    tests/viewporttests.cpp
 
 HEADERS  += mainwindow.h \
     tests/alltests.h \
@@ -33,7 +34,8 @@ HEADERS  += mainwindow.h \
     map.h \
     tests/maptests.h \
     polygoniser.h \
-    tests/polygontests.h
+    tests/polygontests.h \
+    tests/viewporttests.h
 
 FORMS    += mainwindow.ui
 

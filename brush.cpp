@@ -103,11 +103,12 @@ bool Plane::checkValid(QVector3D bot_left, QVector3D top_left, QVector3D top_rig
   else
     return 0;
 }
-
+//!
+//! \brief Brush::Brush default (invalid) constructor
+//!
 Brush::Brush() {
 
 }
-
 //!
 //! \brief Brush::Brush
 //! \param planes

@@ -19,24 +19,31 @@ along with World Editor.  If not, see <http://www.gnu.org/licenses/>.
 #include "viewportscene.h"
 #define GRID_INCREMENT 0
 #define GRID_DECREMENT 1
+
+
 //!
 //! \brief ViewPortScene::ViewPortScene
+//! \param map
+//! \param primary
+//! \param secondary
 //!
-ViewPortScene::ViewPortScene()
+ViewPortScene::ViewPortScene(Map *map, axis primary, axis secondary)
 {
-    m_scale = 8;
 
+    m_primary = primary;
+    m_secondary = secondary;
+    m_map = map;
+
+
+    m_scale = 8;
     m_grid = 1;
 
     QBrush background("black");
     setBackgroundBrush(background);
-    // How to add something to the group
-    //    QGraphicsRectItem *rect = new QGraphicsRectItem;
-    //    rect->setRect(0,0,1024,1024);
-    //    rect->setPen(pen);
-    //    brushes.addToGroup(rect);
+
     this->addItem(&brushes);
     brushes.show();
+
     setScale(m_scale);
 
 }
@@ -173,18 +180,23 @@ void ViewPortScene::setGrid(bool step) {
 //! \brief ViewPortScene::addBrush
 //! \param brush
 //!
-void ViewPortScene::addBrush(Brush *brush) {
+void ViewPortScene::addBrush(QModelIndex index, int first, int last) {
+    qDebug() << "add brush";
+    QVariant tmp = m_map->index(first,0,index).data(Map::BrushRole);
+    Brush brush = tmp.value<Brush>();
+    QList<QPolygonF> polygons = brush.polygonise(m_primary, m_secondary);
 
-    //        for(int j=0; j<list.size(); j++) {
-    //            list[j].setX(list[j].x() * -64);
-    //            list[j].setY(list[j].y() * -64);
-    //        }
-
-    //qDebug() << points;
-//    QPolygonF poly(list);
-//    poly.translate(32768*32,32768*32);
-
-//    brushes.addToGroup(new QGraphicsPolygonItem(poly));
-
+    if (m_secondary == Z_AXIS) {
+        qDebug() << polygons;
+    }
+    QVector<QPointF> list;
+    foreach(QPolygonF poly, polygons) {
+        for(int j=0; j<poly.size(); j++) {
+            poly[j].setX(poly[j].x() * -64);
+            poly[j].setY(poly[j].y() * -64);
+        }
+        poly.translate(32768*32,32768*32);
+        brushes.addToGroup(new QGraphicsPolygonItem(poly));
+    }
 }
 

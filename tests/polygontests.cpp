@@ -1,3 +1,4 @@
+
 #include "polygontests.h"
 
 //!
@@ -177,13 +178,12 @@ void PolygonTests::testCuboid() {
 
     QList<QPolygonF> polys = Polygoniser::poligonise(brush, X_AXIS, Y_AXIS);
 
-    QVector<QPointF> Shape1; Shape1 <<  QPointF(0,-128)  << QPointF(0,128);
-    QVector<QPointF> Shape2; Shape2 <<  QPointF(0,-128)  << QPointF(0,128);
-    QVector<QPointF> Shape3; Shape3 <<  QPointF(32,-128) << QPointF(32,128);
-    QVector<QPointF> Shape4; Shape4 <<  QPointF(0,128)   << QPointF(32,128);
-    QVector<QPointF> Shape5; Shape5 <<  QPointF(0,-128)  << QPointF(32,-128);
-    QVector<QPointF> Shape6; Shape6 <<  QPointF(0,-128)  << QPointF(32,-128) << QPointF(32,128) << QPointF(0,128);
-    QVector<QPointF> Shape7; Shape7 <<  QPointF(0,-128)  << QPointF(32,-128) << QPointF(32,128) << QPointF(0,128);
+    QVector<QPointF> Shape1; Shape1 <<  QPointF(-128,0)  << QPointF(128,0);
+    QVector<QPointF> Shape2; Shape2 <<  QPointF(-128, 32)  << QPointF(128,32);
+    QVector<QPointF> Shape3; Shape3 <<  QPointF(128,0)   << QPointF(128,32);
+    QVector<QPointF> Shape4; Shape4 <<  QPointF(-128,0)  << QPointF(-128,32);
+    QVector<QPointF> Shape5; Shape5 <<  QPointF(-128,0)  << QPointF(128,0) << QPointF(128,32) << QPointF(-128,32);
+    QVector<QPointF> Shape6; Shape6 <<  QPointF(-128,0)  << QPointF(128,0) << QPointF(128,32) << QPointF(-128,32);
 
     QVERIFY(polys.contains(QPolygonF(Shape1)));
     QVERIFY(polys.contains(QPolygonF(Shape2)));
@@ -191,7 +191,6 @@ void PolygonTests::testCuboid() {
     QVERIFY(polys.contains(QPolygonF(Shape4)));
     QVERIFY(polys.contains(QPolygonF(Shape5)));
     QVERIFY(polys.contains(QPolygonF(Shape6)));
-    QVERIFY(polys.contains(QPolygonF(Shape7)));
 
 }
 //!

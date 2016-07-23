@@ -39,5 +39,9 @@ bool allTests::runTests() {
     PolygonTests polyTests;
     QTest::qExec(&polyTests);
 
+    //! Run Polygon tests
+    ViewPortTests vtests;
+    QTest::qExec(&vtests);
+
     return 0;
 }

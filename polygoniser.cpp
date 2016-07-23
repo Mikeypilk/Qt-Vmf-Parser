@@ -41,7 +41,7 @@ QPolygonF Polygoniser::poligonise(QVector<QPointF> points) {
 //!
 bool Polygoniser::planesConnected(QVector3D u)
 {
-#define SMALL_NUM   0.00001
+#define SMALL_NUM   0.001
     float    ax = (u.x() >= 0 ? u.x() : -u.x());
     float    ay = (u.y() >= 0 ? u.y() : -u.y());
     float    az = (u.z() >= 0 ? u.z() : -u.z());
@@ -91,6 +91,10 @@ QList<QPolygonF> Polygoniser::poligonise(Brush *brush, axis primary, axis second
                 list.append(toPointF(pla2->getTopRight(), primary, secondary));
         }
 
+        list.append(toPointF(pla1->getBotLeft(),primary,secondary));
+        list.append(toPointF(pla1->getTopLeft(),primary,secondary));
+        list.append(toPointF(pla1->getTopRight(),primary,secondary));
+
         // Remove any duplicates
         if(!list.empty()) {
             foreach(QPointF point, list) {
@@ -99,6 +103,7 @@ QList<QPolygonF> Polygoniser::poligonise(Brush *brush, axis primary, axis second
                     list.append(point);
                 }
             }
+
             polygons.append( convexHull(list) );
         }
     }
@@ -273,13 +278,13 @@ QPointF Polygoniser::toPointF(QVector3D vector, axis primary, axis secondary) {
     }
     switch (primary) {
     case X_AXIS:
-        output.setX(vector.y());
+        output.setX(vector.x());
         break;
     case Y_AXIS:
         output.setX(vector.y());
         break;
     case Z_AXIS:
-        output.setX(vector.y());
+        output.setX(vector.z());
         break;
     default:
         break;
@@ -289,10 +294,10 @@ QPointF Polygoniser::toPointF(QVector3D vector, axis primary, axis secondary) {
         output.setY(vector.x());
         break;
     case Y_AXIS:
-        output.setY(vector.x());
+        output.setY(vector.y());
         break;
     case Z_AXIS:
-        output.setY(vector.x());
+        output.setY(vector.z());
         break;
     default:
         break;

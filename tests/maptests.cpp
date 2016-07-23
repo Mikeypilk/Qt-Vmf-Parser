@@ -18,11 +18,16 @@ along with World Editor.  If not, see <http://www.gnu.org/licenses/>.
 #include "maptests.h"
 #include "QSignalSpy"
 
-
+//!
+//! \brief MapTests::init
+//!
 void MapTests::init() {
 
 }
 
+//!
+//! \brief MapTests::testInsertBrush
+//!
 void MapTests::testInsertBrush() {
 
     Map newMap;
@@ -42,6 +47,9 @@ void MapTests::testInsertBrush() {
     QCOMPARE(spy.count(), 1); // make sure the signal was emitted exactly one time
 }
 
+//!
+//! \brief MapTests::testReturnBrush
+//!
 void MapTests::testReturnBrush() {
 
     Map newMap;

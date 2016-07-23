@@ -33,7 +33,10 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    ViewPortScene XY_scene;
+    ViewPortScene *m_scene_1;
+    ViewPortScene *m_scene_2;
+    ViewPortScene *m_scene_3;
+    Map model;
 
 signals:
     void changeGrid(bool);

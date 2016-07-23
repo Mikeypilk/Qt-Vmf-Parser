@@ -32,15 +32,56 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->setWindowTitle("World Editor");
 
-    XY_scene.setSceneRect(0,0,MAX_UNITS,MAX_UNITS);
-    ui->graphicsView->setScene(&XY_scene);
-    ui->graphicsView->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-    ui->graphicsView->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
-    ui->graphicsView->setOptimizationFlag(QGraphicsView::DontAdjustForAntialiasing, true);
-    connect(ui->graphicsView, SIGNAL(scaleChanged(qreal)),&XY_scene,SLOT(setScale(qreal)));
-    connect(this, SIGNAL(changeGrid(bool)),&XY_scene,SLOT(setGrid(bool)));
-    connect(this, SIGNAL(instantiateBlock()),&XY_scene, SLOT(makeNewBlock()));
-    connect(this, SIGNAL(newBlockMode()), &XY_scene, SLOT(setNewBlockMode()));
+    for(int i = 0; i < 3; i++) {
+        ViewPortView *view;
+        ViewPortScene *scene;
+        switch(i) {
+        case 0:
+            // Bottom Left
+            view = ui->graphicsView_1;
+            scene = m_scene_1;
+            scene  = new ViewPortScene(&model, Y_AXIS, Z_AXIS);
+            break;
+        case 1:
+            // Bottom Right
+            view = ui->graphicsView_2;
+            scene = m_scene_2;
+            scene  = new ViewPortScene(&model, X_AXIS, Z_AXIS);
+            break;
+        case 2:
+            // Top Right
+            view = ui->graphicsView_3;
+            scene = m_scene_2;
+            scene  = new ViewPortScene(&model, X_AXIS, Y_AXIS);
+            break;
+        }
+        //scene
+        scene->setSceneRect(0,0,MAX_UNITS,MAX_UNITS);
+
+        //view
+        view->setScene(scene);
+        view->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+        view->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+        view->setOptimizationFlag(QGraphicsView::DontAdjustForAntialiasing, true);
+
+        // model signals
+        connect(&model, SIGNAL(rowsInserted(QModelIndex,int,int)),
+                scene, SLOT(addBrush(QModelIndex,int,int)));
+        connect(view, SIGNAL(scaleChanged(qreal)),scene,SLOT(setScale(qreal)));
+        connect(this, SIGNAL(changeGrid(bool)),scene,SLOT(setGrid(bool)));
+        connect(this, SIGNAL(instantiateBlock()),scene, SLOT(makeNewBlock()));
+        connect(this, SIGNAL(newBlockMode()), scene, SLOT(setNewBlockMode()));
+    }
+    QList<Plane*> planes;
+    Plane *plane;
+    planes.prepend(plane = new Plane(QVector3D(-128, 32, 128),QVector3D(128, 32, 128),QVector3D(128, 0, 128)));
+    planes.prepend(plane = new Plane(QVector3D(-128, 0, 0),QVector3D(128, 0, 0),QVector3D(128, 32, 0)));
+    planes.prepend(plane = new Plane(QVector3D(-128, 32, 128),QVector3D(-128, 0, 128),QVector3D(-128, 0, 0)));
+    planes.prepend(plane = new Plane(QVector3D(128, 32, 0),QVector3D(128, 0, 0),QVector3D(128, 0, 128)));
+    planes.prepend(plane = new Plane(QVector3D(128, 32, 128),QVector3D(-128, 32, 128),QVector3D(-128, 32, 0)));
+    planes.prepend(plane = new Plane(QVector3D(128, 0, 0),QVector3D(-128, 0, 0),QVector3D(-128, 0, 128)));
+    Brush brush(planes);
+    model.addBrush(brush);
 }
 //!
 //! \brief MainWindow::~MainWindow
