@@ -32,24 +32,19 @@ class ViewPortScene : public QGraphicsScene
 {
     Q_OBJECT
     int roundGrid(int input, int units);
-    QGraphicsItemGroup brushes;
-
-public:
-    ViewPortScene();
+    void drawGrid(int units, QPen pen, QPainter *painter, const QRectF &rect);
     void drawBackground(QPainter *painter, const QRectF &rect);
     int m_default_size;
     qreal m_scale;
     int m_grid;
-
     Brush *m_brush;
     axis m_primary;
     axis m_secondary;
+    QGraphicsItemGroup brushes;
+
+public:
+    ViewPortScene();
     void addBrush(Brush *brush);
-
-
-
-private:
-    void drawGrid(int units, QPen pen, QPainter *painter, const QRectF &rect);
 
 public slots:
     void setScale(qreal scale);

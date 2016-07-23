@@ -30,9 +30,6 @@ ViewPortScene::ViewPortScene()
 
     QBrush background("black");
     setBackgroundBrush(background);
-
-    QPen pen(QColor("pink"));
-
     // How to add something to the group
     //    QGraphicsRectItem *rect = new QGraphicsRectItem;
     //    rect->setRect(0,0,1024,1024);
@@ -40,61 +37,6 @@ ViewPortScene::ViewPortScene()
     //    brushes.addToGroup(rect);
     this->addItem(&brushes);
     brushes.show();
-
-
-    QList<Plane*> planes;
-    //  Plane *plane;
-    //  planes.prepend(plane = new Plane(QVector3D(-128, 32, 128),QVector3D(128, 32, 128),QVector3D(128, 0, 128)));
-    //  planes.prepend(plane = new Plane(QVector3D(-128, 0, 0),QVector3D(128, 0, 0),QVector3D(128, 32, 0)));
-    //  planes.prepend(plane = new Plane(QVector3D(-128, 32, 128),QVector3D(-128, 0, 128),QVector3D(-128, 0, 0)));
-    //  planes.prepend(plane = new Plane(QVector3D(128, 32, 0),QVector3D(128, 0, 0),QVector3D(128, 0, 128)));
-    //  planes.prepend(plane = new Plane(QVector3D(128, 32, 128),QVector3D(-128, 32, 128),QVector3D(-128, 32, 0)));
-    //  planes.prepend(plane = new Plane(QVector3D(128, 0, 0),QVector3D(-128, 0, 0),QVector3D(-128, 0, 128)));
-    //  Brush brush(planes);
-
-    //    planes.prepend(plane = new Plane(QVector3D(64, 32, 128),QVector3D(128, 32, 128),QVector3D(128, 16, 128)));
-    //    planes.prepend(plane = new Plane(QVector3D(64, 16, 16),QVector3D(128, 16, 16),QVector3D(128, 32, 16)));
-    //    planes.prepend(plane = new Plane(QVector3D(64, 32, 128),QVector3D(64, 16, 128),QVector3D(64, 16, 16)));
-    //    planes.prepend(plane = new Plane(QVector3D(128, 32, 16),QVector3D(128, 16, 16),QVector3D(128, 16, 128)));
-    //    planes.prepend(plane = new Plane(QVector3D(128, 32, 128),QVector3D(64, 32, 128),QVector3D(64, 32, 16)));
-    //    planes.prepend(plane = new Plane(QVector3D(128, 16, 16),QVector3D(64, 16, 16),QVector3D(64, 16, 128)));
-    //    Brush brush(planes);
-
-    //  brush.rotate(Brush::X_AXIS, Brush::Z_AXIS, 45);
-    //  brush.rotate(Brush::Y_AXIS, Brush::Z_AXIS, 45);
-
-    Plane *plane;
-    planes.prepend(plane = new Plane(QVector3D(-64,-32,64),QVector3D(-64,32,64),QVector3D(-32,64,64)));
-    planes.prepend(plane = new Plane(QVector3D(-64,32,0),QVector3D(-64,-32,0),QVector3D(-32,-64,0)));
-    planes.prepend(plane = new Plane(QVector3D(-64,-32,0),QVector3D(-64,32,0),QVector3D(-64,32,64)));
-    planes.prepend(plane = new Plane(QVector3D(64,32,0),QVector3D(64,-32,0),QVector3D(64,-32,64)));
-    planes.prepend(plane = new Plane(QVector3D(-32,64,0),QVector3D(32,64,0),QVector3D(32,64,64)));
-    planes.prepend(plane = new Plane(QVector3D(32,-64,0),QVector3D(-32,-64,0),QVector3D(-32,-64,64)));
-    planes.prepend(plane = new Plane(QVector3D(32,64,0),QVector3D(64,32,0),QVector3D(64,32,64)));
-    planes.prepend(plane = new Plane(QVector3D(64,-32,0),QVector3D(32,-64,0),QVector3D(32,-64,64)));
-    planes.prepend(plane = new Plane(QVector3D(-32,-64,0),QVector3D(-64,-32,0),QVector3D(-64,-32,64)));
-    planes.prepend(plane = new Plane(QVector3D(-64,32,0),QVector3D(-32,64,0),QVector3D(-32,64,64)));
-
-
-//    Plane *plane;
-//    planes.prepend(plane = new Plane(QVector3D(32, -32, 64),QVector3D(-32, -32, 64),QVector3D(-32, 32, 64)));
-//    planes.prepend(plane = new Plane(QVector3D(-32, -32, 0),QVector3D(32, -32, 0),QVector3D(32, 32, 0)));
-//    planes.prepend(plane = new Plane(QVector3D(48, -48, 16),QVector3D(32, -64, 32),QVector3D(48, -48, 48)));
-//    planes.prepend(plane = new Plane(QVector3D(-48, -48, 48),QVector3D(-32, -64, 32),QVector3D(-48, -48, 16)));
-//    planes.prepend(plane = new Plane(QVector3D(-48, 48, 16),QVector3D(-32, 64, 32),QVector3D(-48, 48, 48)));
-//    planes.prepend(plane = new Plane(QVector3D(64, 32, 32),QVector3D(48, 48, 48),QVector3D(32, 64, 32)));
-//    planes.prepend(plane = new Plane(QVector3D(-32, 32, 0),QVector3D(32, 32, 0),QVector3D(48, 48, 16)));
-//    planes.prepend(plane = new Plane(QVector3D(-32, -32, 0),QVector3D(-32, -32, 0),QVector3D(-48, -48, 16)));
-//    planes.prepend(plane = new Plane(QVector3D(32, 32, 0),QVector3D(32, -32, 0),QVector3D(48, -48, 16)));
-//    planes.prepend(plane = new Plane(QVector3D(-32, -32, 0),QVector3D(-32, 32, 0),QVector3D(-48, 48, 16)));
-//    planes.prepend(plane = new Plane(QVector3D(-32, -64, 32),QVector3D(-48, -48, 48),QVector3D(-32, -32, 64)));
-//    planes.prepend(plane = new Plane(QVector3D(32, 64, 32),QVector3D(48, 48, 48),QVector3D(32, 32, 64)));
-//    planes.prepend(plane = new Plane(QVector3D(-64, 32, 32),QVector3D(-48, 48, 48),QVector3D(-32, 32, 64)));
-//    planes.prepend(plane = new Plane(QVector3D(64, 32, 32),QVector3D(64, -32, 32),QVector3D(48, -48, 48)));
-   Brush brush(planes);
-
-    addBrush(&brush);
-
     setScale(m_scale);
 
 }
@@ -232,74 +174,17 @@ void ViewPortScene::setGrid(bool step) {
 //! \param brush
 //!
 void ViewPortScene::addBrush(Brush *brush) {
-    QList<Plane*> planes = brush->getPlanes();
-#define SMALL_NUM   0.00001
 
-    foreach(Plane *pla1, planes) {
-        QVector<QPointF> list;
+    //        for(int j=0; j<list.size(); j++) {
+    //            list[j].setX(list[j].x() * -64);
+    //            list[j].setY(list[j].y() * -64);
+    //        }
 
-        foreach(Plane *pla2, planes) {
-            QVector3D Pn1 = QVector3D::normal(pla1->getTopRight(), pla1->getTopLeft(), pla1->getBotLeft() );
-            QVector3D Po1 = pla1->getTopRight();
-            QVector3D Pn2 = QVector3D::normal(pla2->getTopRight(), pla2->getTopLeft(), pla2->getBotLeft() );
-            QVector3D Po2 = pla2->getTopLeft();
-            QVector3D u = QVector3D::crossProduct(Pn1, Pn2);          // cross product
+    //qDebug() << points;
+//    QPolygonF poly(list);
+//    poly.translate(32768*32,32768*32);
 
-            float    ax = (u.x() >= 0 ? u.x() : -u.x());
-            float    ay = (u.y() >= 0 ? u.y() : -u.y());
-            float    az = (u.z() >= 0 ? u.z() : -u.z());
+//    brushes.addToGroup(new QGraphicsPolygonItem(poly));
 
-            if ((ax+ay+az) < SMALL_NUM) {        // Pn1 and Pn2 are near parallel
-                QVector3D v = Po2 - Po1;
-                if (QVector3D::dotProduct(Pn1, v) == 0) {
-                    // "Pn1 and Pn2 coincide";
-                    continue;
-                }
-                else {
-                    // "Pn1 and Pn2 are parrallel";
-                    continue;
-                }
-            }
-            // Pn1 and Pn2 are connected";
-            if(pla2->getBotLeft().distanceToPlane(pla1->getBotLeft(),
-                                                  pla1->getTopLeft(),
-                                                  pla1->getTopRight()) < 8)
-                list.append( QPointF(pla2->getBotLeft().x(), pla2->getBotLeft().y()) );
-            if(pla2->getTopLeft().distanceToPlane(pla1->getBotLeft(),
-                                                  pla1->getTopLeft(),
-                                                  pla1->getTopRight()) < 8)
-                list.append( QPointF(pla2->getTopLeft().x(), pla2->getTopLeft().y()) );
-            if(pla2->getTopRight().distanceToPlane(pla1->getBotLeft(),
-                                                   pla1->getTopLeft(),
-                                                   pla1->getTopRight()) < 8)
-                list.append( QPointF(pla2->getTopRight().x(), pla2->getTopRight().y()) );
-        }
-
-        // Remove any duplicates
-        if(!list.empty()) {
-            foreach(QPointF point, list) {
-                if(list.contains(point)) {
-                    list.removeAll(point);
-                    list.append(point);
-                }
-            }
-            //list = convexHull(list);
-        }
-        qDebug() << list;
-
-        for(int j=0; j<list.size(); j++) {
-            list[j].setX(list[j].x() * -64);
-            list[j].setY(list[j].y() * -64);
-        }
-
-        //qDebug() << points;
-        QPolygonF poly(list);
-        poly.translate(32768*32,32768*32);
-
-        brushes.addToGroup(new QGraphicsPolygonItem(poly));
-
-
-        qDebug() << "------------------------------";
-    }
 }
 
