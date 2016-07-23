@@ -19,15 +19,17 @@ SOURCES += main.cpp\
     tests/brushtests.cpp \
     viewportscene.cpp \
     viewportview.cpp \
-    tests/controllertests.cpp
+    map.cpp \
+    tests/maptests.cpp
 
 HEADERS  += mainwindow.h \
-        tests/alltests.h \
+    tests/alltests.h \
     brush.h \
     tests/brushtests.h \
     viewportscene.h \
     viewportview.h \
-    tests/controllertests.h
+    map.h \
+    tests/maptests.h
 
 FORMS    += mainwindow.ui
 

@@ -50,6 +50,11 @@ public:
 
 private:
     void drawGrid(int units, QPen pen, QPainter *painter, const QRectF &rect);
+    static int compare(const void *vp1, const void *vp2);
+    static int orientation(QPointF p, QPointF q, QPointF r);
+    static int distSq(QPointF p1, QPointF p2);
+    QPointF nextToTop(QStack<QPointF> &S);
+    QVector<QPointF> convexHull(QVector<QPointF> list);
 
 public slots:
     void setScale(qreal scale);

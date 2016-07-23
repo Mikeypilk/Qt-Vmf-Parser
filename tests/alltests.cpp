@@ -17,8 +17,6 @@ along with World Editor.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "alltests.h"
 
-
-
 allTests::allTests(QObject *parent) : QObject(parent)
 {
 
@@ -33,8 +31,8 @@ bool allTests::runTests() {
     BrushTests brushTest;
     QTest::qExec(&brushTest);
 
-    ControllerTests controlTest;
-    QTest::qExec(&controlTest);
+    MapTests mapTest;
+    QTest::qExec(&mapTest);
 
     return 0;
 }

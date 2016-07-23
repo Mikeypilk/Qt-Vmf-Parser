@@ -15,19 +15,21 @@ You should have received a copy of the GNU General Public License
 along with World Editor.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "mainwindow.h"
-#include <QApplication>
-#include <tests/alltests.h>
+#ifndef MAPTESTS_H
+#define MAPTESTS_H
 
+#include <QObject>
+#include <QTest>
+#include "map.h"
 
-int main(int argc, char *argv[])
+class MapTests : public QObject
 {
-    QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
+    Q_OBJECT
 
-    allTests tests;
-    tests.runTests();
+private slots:
+  void init();
+  void testInsertBrush();
 
-    return a.exec();
-}
+};
+
+#endif // MAPTESTS_H
