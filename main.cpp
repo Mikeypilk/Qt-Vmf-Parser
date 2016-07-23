@@ -23,11 +23,11 @@ along with World Editor.  If not, see <http://www.gnu.org/licenses/>.
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
+    //MainWindow w;
+   // w.show();
 
     allTests tests;
     tests.runTests();
 
-    return a.exec();
+    return 0; //a.exec();
 }

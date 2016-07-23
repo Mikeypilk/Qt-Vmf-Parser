@@ -257,26 +257,26 @@ QVector2D Brush::getTopLeft(axis primary, axis secondary) {
   }
   if(!getBoundingBox()) {
     switch (primary) {
-    case X_AXIS:
+    case axis::X_AXIS:
       vec.setX(m_x_max_min.y());
       break;
-    case Y_AXIS:
+    case axis::Y_AXIS:
       vec.setX(m_y_max_min.y());
       break;
-    case Z_AXIS:
+    case axis::Z_AXIS:
       vec.setX(m_z_max_min.y());
       break;
     default:
       break;
     }
     switch (secondary) {
-    case X_AXIS:
+    case axis::X_AXIS:
       vec.setY(m_x_max_min.x());
       break;
-    case Y_AXIS:
+    case axis::Y_AXIS:
       vec.setY(m_y_max_min.x());
       break;
-    case Z_AXIS:
+    case axis::Z_AXIS:
       vec.setY(m_z_max_min.x());
       break;
     default:
@@ -299,26 +299,26 @@ QVector2D Brush::getTopRight(axis primary, axis secondary) {
   }
   if(!getBoundingBox()) {
     switch (primary) {
-    case X_AXIS:
+    case axis::X_AXIS:
       vec.setX(m_x_max_min.x());
       break;
-    case Y_AXIS:
+    case axis::Y_AXIS:
       vec.setX(m_y_max_min.x());
       break;
-    case Z_AXIS:
+    case axis::Z_AXIS:
       vec.setX(m_z_max_min.x());
       break;
     default:
       break;
     }
     switch (secondary) {
-    case X_AXIS:
+    case axis::X_AXIS:
       vec.setY(m_x_max_min.x());
       break;
-    case Y_AXIS:
+    case axis::Y_AXIS:
       vec.setY(m_y_max_min.x());
       break;
-    case Z_AXIS:
+    case axis::Z_AXIS:
       vec.setY(m_z_max_min.x());
       break;
     default:
@@ -341,26 +341,26 @@ QVector2D Brush::getBottomLeft(axis primary, axis secondary) {
   }
   if(!getBoundingBox()) {
     switch (primary) {
-    case X_AXIS:
+    case axis::X_AXIS:
       vec.setX(m_x_max_min.y());
       break;
-    case Y_AXIS:
+    case axis::Y_AXIS:
       vec.setX(m_y_max_min.y());
       break;
-    case Z_AXIS:
+    case axis::Z_AXIS:
       vec.setX(m_z_max_min.y());
       break;
     default:
       break;
     }
     switch (secondary) {
-    case X_AXIS:
+    case axis::X_AXIS:
       vec.setY(m_x_max_min.y());
       break;
-    case Y_AXIS:
+    case axis::Y_AXIS:
       vec.setY(m_y_max_min.y());
       break;
-    case Z_AXIS:
+    case axis::Z_AXIS:
       vec.setY(m_z_max_min.y());
       break;
     default:
@@ -383,26 +383,26 @@ QVector2D Brush::getBottomRight(axis primary, axis secondary) {
   }
   if(!getBoundingBox()) {
     switch (primary) {
-    case X_AXIS:
+    case axis::X_AXIS:
       vec.setX(m_x_max_min.x());
       break;
-    case Y_AXIS:
+    case axis::Y_AXIS:
       vec.setX(m_y_max_min.x());
       break;
-    case Z_AXIS:
+    case axis::Z_AXIS:
       vec.setX(m_z_max_min.x());
       break;
     default:
       break;
     }
     switch (secondary) {
-    case X_AXIS:
+    case axis::X_AXIS:
       vec.setY(m_x_max_min.y());
       break;
-    case Y_AXIS:
+    case axis::Y_AXIS:
       vec.setY(m_y_max_min.y());
       break;
-    case Z_AXIS:
+    case axis::Z_AXIS:
       vec.setY(m_z_max_min.y());
       break;
     default:
@@ -473,26 +473,26 @@ QVector2D Brush::getCenter(axis primary, axis secondary) {
 void Brush::translate(axis primary, axis secondary, QVector2D transform) {
   QMatrix4x4 matrix;
   switch (primary) {
-  case X_AXIS:
+  case axis::X_AXIS:
     matrix.translate(transform.x(), 0, 0);
     break;
-  case Y_AXIS:
+  case axis::Y_AXIS:
     matrix.translate(0, transform.x(), 0);
     break;
-  case Z_AXIS:
+  case axis::Z_AXIS:
     matrix.translate(0, 0, transform.x());
     break;
   default:
     break;
   }
   switch (secondary) {
-  case X_AXIS:
+  case axis::X_AXIS:
     matrix.translate(transform.y(), 0, 0);
     break;
-  case Y_AXIS:
+  case axis::Y_AXIS:
     matrix.translate(0, transform.y(), 0);
     break;
-  case Z_AXIS:
+  case axis::Z_AXIS:
     matrix.translate(0, 0, transform.y());
     break;
   default:
@@ -524,11 +524,11 @@ void Brush::rotate(axis primary, axis secondary, float angle) {
   // Remember if your editing the X against Z axis, you do the
   // bounding box and start to rotate your going to be wanting
   // to rotate around the Z axis...
-  if((primary == X_AXIS) || (secondary == X_AXIS))
+  if((primary == axis::X_AXIS) || (secondary == axis::X_AXIS))
     rotateX = false;
-  if((primary == Y_AXIS) || (secondary == Y_AXIS))
+  if((primary == axis::Y_AXIS) || (secondary == axis::Y_AXIS))
     rotateY = false;
-  if((primary == Z_AXIS) || (secondary == Z_AXIS))
+  if((primary == axis::Z_AXIS) || (secondary == axis::Z_AXIS))
     rotateZ = false;
 
   // for some reason i couldnt understand the matrix.rotate wouldnt work..?
@@ -571,26 +571,26 @@ void Brush::rotate(axis primary, axis secondary, float angle) {
 void Brush::scale(axis primary, axis secondary, QVector2D scaleFactor) {
   QMatrix4x4 matrix;
   switch (primary) {
-  case X_AXIS:
+  case axis::X_AXIS:
     matrix.scale(scaleFactor.x(),1,1);
     break;
-  case Y_AXIS:
+  case axis::Y_AXIS:
     matrix.scale(1, scaleFactor.x(), 1);
     break;
-  case Z_AXIS:
+  case axis::Z_AXIS:
     matrix.scale(1, 1, scaleFactor.x());
     break;
   default:
     break;
   }
   switch (secondary) {
-  case X_AXIS:
+  case axis::X_AXIS:
     matrix.scale(scaleFactor.y(), 1, 1);
     break;
-  case Y_AXIS:
+  case axis::Y_AXIS:
     matrix.scale(1, scaleFactor.y(), 1);
     break;
-  case Z_AXIS:
+  case axis::Z_AXIS:
     matrix.scale(1, 1, scaleFactor.y());
     break;
   default:
@@ -683,7 +683,7 @@ void  Brush::matchingVertexes(axis primary, axis secondary, QVector2D checkpos) 
   m_zMatch.clear();
 
   Plane *pla;
-  axis thisAxis = X_AXIS;
+  axis thisAxis = axis::X_AXIS;
   for(int i=0; i<2; i++) {
     qreal check;
     if (0==i)
@@ -691,7 +691,7 @@ void  Brush::matchingVertexes(axis primary, axis secondary, QVector2D checkpos) 
     if (1==i)
       thisAxis = secondary;
     switch (thisAxis) {
-    case X_AXIS:
+    case axis::X_AXIS:
       if(1==i) {
         check = checkpos.y();
       }
@@ -708,7 +708,7 @@ void  Brush::matchingVertexes(axis primary, axis secondary, QVector2D checkpos) 
           m_xMatch.append(list.at(2));
       }
       break;
-    case Y_AXIS:
+    case axis::Y_AXIS:
       if(1==i) {
         check = checkpos.y();
       }
@@ -725,7 +725,7 @@ void  Brush::matchingVertexes(axis primary, axis secondary, QVector2D checkpos) 
           m_yMatch.append(list.at(2));
       }
       break;
-    case Z_AXIS:
+    case axis::Z_AXIS:
       if(1==i) {
         check = checkpos.y();
       }
@@ -756,26 +756,26 @@ void  Brush::matchingVertexes(axis primary, axis secondary, QVector2D checkpos) 
 void  Brush::translateMyVertexes(axis primary, axis secondary, QVector2D transform) {
   QMatrix4x4 matrix;
   switch (primary) {
-  case X_AXIS:
+  case axis::X_AXIS:
     matrix.translate(transform.x(), 0, 0);
     break;
-  case Y_AXIS:
+  case axis::Y_AXIS:
     matrix.translate(0, transform.x(), 0);
     break;
-  case Z_AXIS:
+  case axis::Z_AXIS:
     matrix.translate(0, 0, transform.x());
     break;
   default:
     break;
   }
   switch (secondary) {
-  case X_AXIS:
+  case axis::X_AXIS:
     matrix.translate(transform.y(), 0, 0);
     break;
-  case Y_AXIS:
+  case axis::Y_AXIS:
     matrix.translate(0, transform.y(), 0);
     break;
-  case Z_AXIS:
+  case axis::Z_AXIS:
     matrix.translate(0, 0, transform.y());
     break;
   default:

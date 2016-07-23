@@ -21,6 +21,7 @@ along with World Editor.  If not, see <http://www.gnu.org/licenses/>.
 #include <QObject>
 #include "tests/brushtests.h"
 #include "tests/maptests.h"
+#include "tests/polygontests.h"
 
 class allTests : public QObject
 {

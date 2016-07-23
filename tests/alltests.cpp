@@ -31,8 +31,13 @@ bool allTests::runTests() {
     BrushTests brushTest;
     QTest::qExec(&brushTest);
 
+    //! Run Map tests
     MapTests mapTest;
     QTest::qExec(&mapTest);
+
+    //! Run Polygon tests
+    PolygonTests polyTests;
+    QTest::qExec(&polyTests);
 
     return 0;
 }

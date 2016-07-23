@@ -46,6 +46,12 @@ public:
 
 };
 
+enum axis {
+    X_AXIS,
+    Y_AXIS,
+    Z_AXIS,
+};
+
 //!
 //! \brief The Brush class represents a 3D solid
 //!
@@ -62,7 +68,6 @@ class Brush
     QPointF m_z_max_min;
 public:
     Brush(QList<Plane*> planes);
-
     int getNumOfSides();
     enum boundingBox {
         BOUND_BOX__TOP_LEFT,
@@ -75,11 +80,7 @@ public:
         BOUND_BOX__BOTTOM,
         BOUND_BOX__CENTER,
     };
-    enum axis {
-        X_AXIS,
-        Y_AXIS,
-        Z_AXIS,
-    };
+
     QList<QVector3D*> m_xMatch;
     QList<QVector3D*> m_yMatch;
     QList<QVector3D*> m_zMatch;
