@@ -23,8 +23,17 @@ along with World Editor.  If not, see <http://www.gnu.org/licenses/>.
 #include <QGraphicsRectItem>
 #include <QGraphicsLineItem>
 #include <QGraphicsItemGroup>
+#include <QGraphicsSceneMouseEvent>
 #include "brush.h"
 #include "map.h"
+
+
+enum MOUSE_INTERACT_MODE {
+    NEW,
+    SELECT,
+    TRANSFORM,
+};
+
 //!
 //! \brief The ViewPortScene class
 //! The view port for editing the 3d brushes in 2 dimensions
@@ -32,28 +41,32 @@ along with World Editor.  If not, see <http://www.gnu.org/licenses/>.
 class ViewPortScene : public QGraphicsScene
 {
     Q_OBJECT
+private:
     int roundGrid(int input, int units);
     void drawGrid(int units, QPen pen, QPainter *painter, const QRectF &rect);
     void drawBackground(QPainter *painter, const QRectF &rect);
     int m_default_size;
     qreal m_scale;
     int m_grid;
-
     axis m_primary;
     axis m_secondary;
+    QPoint m_pressPoint;
+    QGraphicsRectItem m_newTempBlock;
     Map *m_map;
     QGraphicsItemGroup brushes;
+    MOUSE_INTERACT_MODE m_mouseMode;
 
 public:
-
     ViewPortScene(Map *map, axis primary, axis secondary);
+    void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
 
 public slots:
     void setScale(qreal scale);
     void setGrid(bool step);
+    void setMouseMode(MOUSE_INTERACT_MODE mode);
     void addBrush(QModelIndex index, int first, int last);
 };
-
-
 
 #endif // VIEWPORT_H

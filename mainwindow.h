@@ -25,6 +25,8 @@ namespace Ui {
 class MainWindow;
 }
 
+
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -40,14 +42,15 @@ public:
 
 signals:
     void changeGrid(bool);
-    void instantiateBlock();
-    void newBlockMode();
+    void changeViewPortMode(MOUSE_INTERACT_MODE);
+
 
 private slots:
     void on_actionGridincrement_triggered();
     void on_actionGridDecrement_triggered();
     void on_actionInstantiateBlock_triggered();
     void on_actionNewBlock_triggered();
+    void on_actionSelect_triggered();
 
 private:
     Ui::MainWindow *ui;

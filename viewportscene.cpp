@@ -34,7 +34,6 @@ ViewPortScene::ViewPortScene(Map *map, axis primary, axis secondary)
     m_secondary = secondary;
     m_map = map;
 
-
     m_scale = 8;
     m_grid = 1;
 
@@ -43,6 +42,8 @@ ViewPortScene::ViewPortScene(Map *map, axis primary, axis secondary)
 
     this->addItem(&brushes);
     brushes.show();
+
+    this->addItem(&m_newTempBlock);
 
     setScale(m_scale);
 
@@ -197,6 +198,81 @@ void ViewPortScene::addBrush(QModelIndex index, int first, int last) {
         }
         poly.translate(32768*32,32768*32);
         brushes.addToGroup(new QGraphicsPolygonItem(poly));
+
+        // A group
+        // add group pointer into list with modelIndex in
+
     }
 }
+
+void ViewPortScene::setMouseMode(MOUSE_INTERACT_MODE mode) {
+    m_mouseMode = mode;
+    qDebug() << "setting mode to " << mode;
+}
+//! \brief ViewPortScene::mousePressEvent receives mouse press events for the scene.
+//! \param mouseEvent
+//!
+void ViewPortScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) {
+    switch (m_mouseMode) {
+    case SELECT:
+    case NEW:
+        m_pressPoint = QPoint(roundGrid(mouseEvent->scenePos().x(),m_grid),
+                              roundGrid(mouseEvent->scenePos().y(),m_grid));
+        m_newTempBlock.show();
+        break;
+
+    }
+}
+//!
+//! \brief ViewPortScene::mouseReleaseEvent receives mouse release events for the scene.
+//! \param mouseEvent
+//!
+void ViewPortScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent) {
+    switch (m_mouseMode) {
+    case SELECT:
+
+        break;
+    case NEW:
+        // Set the press point back to default so it doesnt automatically make a new box
+        m_pressPoint = QPoint(0,0);
+        break;
+    }
+}
+//!
+//! \brief ViewPortScene::mouseReleaseEvent receives mouse move events for the scene.
+//! \param mouseEvent
+//!
+void ViewPortScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent) {
+
+    int mouse_x = roundGrid(mouseEvent->scenePos().x(),m_grid);
+    int mouse_y = roundGrid(mouseEvent->scenePos().y(),m_grid);
+    QRect rect(m_pressPoint, QSize(1, 1));
+    QBrush changing(QColor(0x00, 0x00, 255, 0x40));
+    QBrush yellowOutline(QColor("yellow"));
+    if(Qt::NoButton == mouseEvent->button()) {
+        switch (m_mouseMode) {
+        case SELECT:
+
+            break;
+        case NEW:
+            if(m_pressPoint != QPoint()) {
+                m_newTempBlock.setBrush(changing);
+                m_newTempBlock.setPen(QPen(yellowOutline, m_scale/8, Qt::DashLine));
+                rect.setHeight(mouse_y-m_pressPoint.y());
+                rect.setWidth(mouse_x-m_pressPoint.x());
+                if(mouse_x - m_pressPoint.x() < 0) {
+                    rect.setX(mouse_x);
+                    rect.setWidth(m_pressPoint.x() - rect.x());
+                }
+                if(mouse_y - m_pressPoint.y() < 0) {
+                    rect.setY(mouse_y);
+                    rect.setHeight(m_pressPoint.y() - rect.y());
+                }
+                m_newTempBlock.setRect(rect);
+                break;
+            }
+        }
+    }
+}
+
 

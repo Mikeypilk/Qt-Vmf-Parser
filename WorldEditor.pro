@@ -40,3 +40,8 @@ HEADERS  += mainwindow.h \
 FORMS    += mainwindow.ui
 
 CONFIG += testcase
+
+RESOURCES += \
+    icons.qrc
+
+

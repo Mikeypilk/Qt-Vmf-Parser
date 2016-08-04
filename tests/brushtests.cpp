@@ -490,20 +490,6 @@ void BrushTests::testInitBrushOctagonal() {
 
   planes.clear();
   Plane *plane;
-//  planes.prepend(plane = new Plane(QVector3D(32, -32, 64),QVector3D(-32, -32, 64),QVector3D(-32, 32, 64)));
-//  planes.prepend(plane = new Plane(QVector3D(-32, -32, 0),QVector3D(32, -32, 0),QVector3D(32, 32, 0)));
-//  planes.prepend(plane = new Plane(QVector3D(48, -48, 16),QVector3D(32, -64, 32),QVector3D(48, -48, 48)));
-//  planes.prepend(plane = new Plane(QVector3D(-48, -48, 48),QVector3D(-32, -64, 32),QVector3D(-48, -48, 16)));
-//  planes.prepend(plane = new Plane(QVector3D(-48, 48, 16),QVector3D(-32, 64, 32),QVector3D(-48, 48, 48)));
-//  planes.prepend(plane = new Plane(QVector3D(64, 32, 32),QVector3D(48, 48, 48),QVector3D(32, 64, 32)));
-//  planes.prepend(plane = new Plane(QVector3D(-32, 32, 0),QVector3D(32, 32, 0),QVector3D(48, 48, 16)));
-//  planes.prepend(plane = new Plane(QVector3D(-32, -32, 0),QVector3D(-32, -32, 0),QVector3D(-48, -48, 16)));
-//  planes.prepend(plane = new Plane(QVector3D(32, 32, 0),QVector3D(32, -32, 0),QVector3D(48, -48, 16)));
-//  planes.prepend(plane = new Plane(QVector3D(-32, -32, 0),QVector3D(-32, 32, 0),QVector3D(-48, 48, 16)));
-//  planes.prepend(plane = new Plane(QVector3D(-32, -64, 32),QVector3D(-48, -48, 48),QVector3D(-32, -32, 64)));
-//  planes.prepend(plane = new Plane(QVector3D(32, 64, 32),QVector3D(48, 48, 48),QVector3D(32, 32, 64)));
-//  planes.prepend(plane = new Plane(QVector3D(-64, 32, 32),QVector3D(-48, 48, 48),QVector3D(-32, 32, 64)));
-//  planes.prepend(plane = new Plane(QVector3D(64, 32, 32),QVector3D(64, -32, 32),QVector3D(48, -48, 48)));
 
   planes.prepend(plane = new Plane(QVector3D(-64,-32,64),QVector3D(-64,32,64),QVector3D(-32,64,64)));
   planes.prepend(plane = new Plane(QVector3D(-64,32,0),QVector3D(-64,-32,0),QVector3D(-32,-64,0)));

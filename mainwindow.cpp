@@ -16,6 +16,7 @@ along with World Editor.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <qlabel.h>
 
 #define GRID_INCREMENT 0
 #define GRID_DECREMENT 1
@@ -31,6 +32,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     this->setWindowTitle("World Editor");
+    QLabel *label = new QLabel("Status Bar: ");
+
+    ui->statusBar->addWidget(label);
 
     for(int i = 0; i < 3; i++) {
         ViewPortView *view;
@@ -71,15 +75,22 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(this, SIGNAL(changeGrid(bool)),scene,SLOT(setGrid(bool)));
         connect(this, SIGNAL(instantiateBlock()),scene, SLOT(makeNewBlock()));
         connect(this, SIGNAL(newBlockMode()), scene, SLOT(setNewBlockMode()));
+        connect(this, SIGNAL(changeViewPortMode(MOUSE_INTERACT_MODE)),
+                scene, SLOT(setMouseMode(MOUSE_INTERACT_MODE)));
     }
+    // Test shape
     QList<Plane*> planes;
     Plane *plane;
-    planes.prepend(plane = new Plane(QVector3D(-128, 32, 128),QVector3D(128, 32, 128),QVector3D(128, 0, 128)));
-    planes.prepend(plane = new Plane(QVector3D(-128, 0, 0),QVector3D(128, 0, 0),QVector3D(128, 32, 0)));
-    planes.prepend(plane = new Plane(QVector3D(-128, 32, 128),QVector3D(-128, 0, 128),QVector3D(-128, 0, 0)));
-    planes.prepend(plane = new Plane(QVector3D(128, 32, 0),QVector3D(128, 0, 0),QVector3D(128, 0, 128)));
-    planes.prepend(plane = new Plane(QVector3D(128, 32, 128),QVector3D(-128, 32, 128),QVector3D(-128, 32, 0)));
-    planes.prepend(plane = new Plane(QVector3D(128, 0, 0),QVector3D(-128, 0, 0),QVector3D(-128, 0, 128)));
+    planes.prepend(plane = new Plane(QVector3D(-64,-32,64),QVector3D(-64,32,64),QVector3D(-32,64,64)));
+    planes.prepend(plane = new Plane(QVector3D(-64,32,0),QVector3D(-64,-32,0),QVector3D(-32,-64,0)));
+    planes.prepend(plane = new Plane(QVector3D(-64,-32,0),QVector3D(-64,32,0),QVector3D(-64,32,64)));
+    planes.prepend(plane = new Plane(QVector3D(64,32,0),QVector3D(64,-32,0),QVector3D(64,-32,64)));
+    planes.prepend(plane = new Plane(QVector3D(-32,64,0),QVector3D(32,64,0),QVector3D(32,64,64)));
+    planes.prepend(plane = new Plane(QVector3D(32,-64,0),QVector3D(-32,-64,0),QVector3D(-32,-64,64)));
+    planes.prepend(plane = new Plane(QVector3D(32,64,0),QVector3D(64,32,0),QVector3D(64,32,64)));
+    planes.prepend(plane = new Plane(QVector3D(64,-32,0),QVector3D(32,-64,0),QVector3D(32,-64,64)));
+    planes.prepend(plane = new Plane(QVector3D(-32,-64,0),QVector3D(-64,-32,0),QVector3D(-64,-32,64)));
+    planes.prepend(plane = new Plane(QVector3D(-64,32,0),QVector3D(-32,64,0),QVector3D(-32,64,64)));
     Brush brush(planes);
     model.addBrush(brush);
 }
@@ -109,12 +120,18 @@ void MainWindow::on_actionGridDecrement_triggered()
 //!
 void MainWindow::on_actionInstantiateBlock_triggered()
 {
-    emit(instantiateBlock());
 }
 //!
 //! \brief MainWindow::on_actionNewBlock_triggered
 //!
 void MainWindow::on_actionNewBlock_triggered()
 {
-    emit(newBlockMode());
+    emit(changeViewPortMode(NEW));
+}
+//!
+//! \brief MainWindow::on_actionSelect_triggered
+//!
+void MainWindow::on_actionSelect_triggered()
+{
+    emit(changeViewPortMode(SELECT));
 }
