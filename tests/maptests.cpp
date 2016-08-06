@@ -69,3 +69,13 @@ void MapTests::testReturnBrush() {
     QCOMPARE(s2.getCenter(X_AXIS, Y_AXIS), QVector2D(0,16));
 
 }
+
+void MapTests::testReadVMF() {
+
+    Map map;
+    map.readVMF(":/vmfs/testBox.vmf");
+
+
+
+
+}

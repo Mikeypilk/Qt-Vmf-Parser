@@ -42,6 +42,7 @@ FORMS    += mainwindow.ui
 CONFIG += testcase
 
 RESOURCES += \
-    icons.qrc
+    icons.qrc \
+    tests/vmfs.qrc
 
 

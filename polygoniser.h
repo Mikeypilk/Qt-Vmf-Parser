@@ -9,7 +9,9 @@
 #include <QDebug>
 
 #include "brush.h"
-
+//!
+//! \brief The Polygoniser class
+//!
 class Polygoniser
 {
     static int compare(const void *vp1, const void *vp2);

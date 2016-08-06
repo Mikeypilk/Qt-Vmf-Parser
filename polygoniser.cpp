@@ -25,7 +25,7 @@ along with World Editor.  If not, see <http://www.gnu.org/licenses/>.
 static QPointF p0;
 
 //!
-//! \brief Polygoniser::a list of points into a convex polygon
+//! \brief Polygoniser::turns a list of points into a convex polygon
 //! \param points
 //! \return
 //!

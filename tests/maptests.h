@@ -30,6 +30,7 @@ private slots:
   void init();
   void testInsertBrush();
   void testReturnBrush();
+  void testReadVMF();
 
 };
 

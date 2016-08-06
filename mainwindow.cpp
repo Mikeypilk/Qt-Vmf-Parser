@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+
     this->setWindowTitle("World Editor");
     QLabel *label = new QLabel("Status Bar: ");
 

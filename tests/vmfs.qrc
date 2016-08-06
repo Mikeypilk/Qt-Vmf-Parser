@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>vmfs/testBox.vmf</file>
+        <file>vmfs/testOctagon.vmf</file>
+    </qresource>
+</RCC>

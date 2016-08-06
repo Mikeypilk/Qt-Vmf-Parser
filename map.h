@@ -21,31 +21,47 @@ along with World Editor.  If not, see <http://www.gnu.org/licenses/>.
 #include <QObject>
 #include "brush.h"
 //!
-//! \brief The Map class is a model that holds all the brushes
-//!
-//! I want it to be like this so that if I come to make this app multi user
-//! then i can properly manage changes in a stateful way
-//!
-//! Also its gonna make it super easy to have a nice tree/table ui widget to allow the
-//! user to easily edit/view all the brush data.
+//! \brief The Map class is the model that holds all the data for a map
 //!
 class Map : public QAbstractItemModel
 {
     Q_OBJECT
-    QList<Brush>  m_brushes;
+    QList<Brush> m_brushes; //! The Brushes defining the 3D blocks in the game world
+
+    struct {
+        int editorVersion;  //! The version of Hammer used to create the file.
+        int editorBuild;    //! The patch number of Hammer the file was generated with.
+        int mapVersion;     //! represents how many times you've saved the file.
+        int formatVersion;  //! (Most likely the VMF file format version)
+        int prefab;         //! a full map or simply a collection of prefabs.
+    } m_versionInfo;
+
+    struct {
+        bool bSnapToGrid;   //! Whether the map has the grid snapping feature enabled.
+        bool bShowGrid;     //! Whether the map is showing the 2D grid.
+        bool ShowLogicalGrid; //! Changes whether the hidden "Logical View" should show a grid
+        int nGridSpacing;   //! The value the grid lines are spaced at.
+        bool bShow3DGrid;   //! Whether the map is showing the 3D grid.
+    } m_editorSettings;
+
+    void parseGenericStruct(QTextStream *txt, QStringList *genericStruct);
+    bool populateVersionInfo(QStringList *genericList);
+    bool populateEditorSetting(QStringList *genericList);
 
 public:
     enum MapRoles {
         BrushRole = Qt::UserRole + 1,
     };
+    QModelIndex *SOLIDS;
 
     Map(QObject *parent = 0);
     QModelIndex index(int row, int column, const QModelIndex & parent = QModelIndex()) const;
-    QModelIndex parent(const QModelIndex & index) const;
-    int columnCount(const QModelIndex & parent = QModelIndex()) const;
-    int rowCount(const QModelIndex & parent = QModelIndex()) const;
-    QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
+    QModelIndex parent(const QModelIndex &index) const;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     void addBrush(const Brush &newBrush);
+    bool readVMF(const QString &filename);
 
 
 };
