@@ -40,7 +40,7 @@ public:
     ViewPortScene *m_scene_1;
     ViewPortScene *m_scene_2;
     ViewPortScene *m_scene_3;
-    Map model;
+    Solids model;
 
 signals:
     void changeGrid(bool);

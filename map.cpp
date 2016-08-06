@@ -18,75 +18,6 @@ along with World Editor.  If not, see <http://www.gnu.org/licenses/>.
 #include "map.h"
 
 //!
-//! \brief Map::Map
-//! \param parent
-//!
-Map::Map(QObject *parent)
-    : QAbstractItemModel(parent)
-{
-}
-//!
-//! \brief Map::index
-//! \param row
-//! \param column
-//! \param parent
-//!
-QModelIndex Map::index(int row, int column, const QModelIndex &parent) const {
-    return createIndex(row, column, parent.internalPointer());
-}
-//!
-//! \brief Map::parent
-//! \param index
-//!
-QModelIndex Map::parent(const QModelIndex &index) const {
-    return index.parent();
-}
-//!
-//! \brief Map::columnCount
-//! \param parent
-//! \return
-//!
-int Map::columnCount(const QModelIndex &parent) const {
-    return 1;
-}
-//!
-//! \brief Map::rowCount
-//! \param parent
-//! \return
-//!
-int Map::rowCount(const QModelIndex & parent) const {
-    Q_UNUSED(parent);
-    return m_brushes.count();
-}
-//!
-//! \brief Map::data
-//! \param index
-//! \param role
-//! \return
-//!
-QVariant Map::data(const QModelIndex & index, int role) const {
-    if (index.row() < 0 || index.row() >= m_brushes.count())
-        return QVariant();
-
-    const Brush &brush = m_brushes[index.row()];
-
-    if (role == BrushRole) {
-        QVariant v;
-        v.setValue(brush);
-        return v;
-    }
-}
-//!
-//! \brief Map::addBrush
-//! \param newBrush
-//!
-void Map::addBrush(const Brush &newBrush) {
-    beginInsertRows(QModelIndex(), rowCount(), rowCount());
-    m_brushes << newBrush;
-    endInsertRows();
-}
-
-//!
 //! \brief Map::parseGenericStruct converts generic vmf text stucture into a QStringList
 //!  The structure looks like this
 //!  @verbatim
@@ -120,6 +51,46 @@ void Map::parseGenericStruct(QTextStream *txt, QStringList *genericStruct)
             return;
         }
     }
+}
+
+void Map::parseWorld(QTextStream *txt) {
+    QStringList worldSettings;
+    QString line;
+    bool open = false;
+    while (txt->readLineInto(&line)) {
+        if(line.remove("\t") == "solid") {
+            goto SOLID;
+        }
+        if(line.contains("{")) {
+            open = true;
+            continue;
+        }
+        if(line.contains("}")) {
+            open = false;
+        }
+        if(open) {
+            worldSettings.append(line.remove("\t").remove(" ")
+                                  .split(QRegularExpression("\""),
+                                         QString::SkipEmptyParts));
+        }
+        else {
+            return;
+        }
+    }
+
+SOLID:
+//    solid
+//	{
+//		"id" "2"
+//		side
+//		{
+//			"id" "1"
+//			"plane" "(-128 32 128) (128 32 128) (128 0 128)"
+//    QList<Plane*> planes;
+//    while (txt->readLineInto(&line)) {
+//        if(line == side)
+//    }
+    return;
 }
 
 //!
@@ -165,7 +136,7 @@ VISGROUPS:
 
 VIEWSETTINGS:
         parseGenericStruct(&txt, &list);
-        if(!populateEditorSetting(&list)) {
+        if(!populateViewSettings(&list)) {
             list.clear();
             goto MASTER;
         }
@@ -193,11 +164,11 @@ bool Map::populateVersionInfo(QStringList *genericList) {
 
 bool Map::populateEditorSetting(QStringList *genericList) {
     bool ok;
-    m_editorSettings.bSnapToGrid = QString(genericList->at(genericList->indexOf(QRegularExpression("bSnapToGrid")) + 1)).toInt(&ok);
-    m_editorSettings.bShowGrid = QString(genericList->at(genericList->indexOf(QRegularExpression("bShowGrid")) + 1)).toInt(&ok);
-    m_editorSettings.ShowLogicalGrid = QString(genericList->at(genericList->indexOf(QRegularExpression("ShowLogicalGrid")) + 1)).toInt(&ok);
-    m_editorSettings.nGridSpacing = QString(genericList->at(genericList->indexOf(QRegularExpression("nGridSpacing")) + 1)).toInt(&ok);
-    m_editorSettings.bShow3DGrid = QString(genericList->at(genericList->indexOf(QRegularExpression("bShow3DGrid")) + 1)).toInt(&ok);
+    m_viewSettings.bSnapToGrid = QString(genericList->at(genericList->indexOf(QRegularExpression("bSnapToGrid")) + 1)).toInt(&ok);
+    m_viewSettings.bShowGrid = QString(genericList->at(genericList->indexOf(QRegularExpression("bShowGrid")) + 1)).toInt(&ok);
+    m_viewSettings.ShowLogicalGrid = QString(genericList->at(genericList->indexOf(QRegularExpression("ShowLogicalGrid")) + 1)).toInt(&ok);
+    m_viewSettings.nGridSpacing = QString(genericList->at(genericList->indexOf(QRegularExpression("nGridSpacing")) + 1)).toInt(&ok);
+    m_viewSettings.bShow3DGrid = QString(genericList->at(genericList->indexOf(QRegularExpression("bShow3DGrid")) + 1)).toInt(&ok);
     if(ok)
         return 0;
     else

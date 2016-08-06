@@ -93,7 +93,7 @@ MainWindow::MainWindow(QWidget *parent) :
     planes.prepend(plane = new Plane(QVector3D(-32,-64,0),QVector3D(-64,-32,0),QVector3D(-64,-32,64)));
     planes.prepend(plane = new Plane(QVector3D(-64,32,0),QVector3D(-32,64,0),QVector3D(-32,64,64)));
     Brush brush(planes);
-    model.addBrush(brush);
+    model.addSolid(brush);
 }
 //!
 //! \brief MainWindow::~MainWindow

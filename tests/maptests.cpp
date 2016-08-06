@@ -14,7 +14,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with World Editor.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+#include "solids.h"
 #include "maptests.h"
 #include "QSignalSpy"
 
@@ -30,8 +30,8 @@ void MapTests::init() {
 //!
 void MapTests::testInsertBrush() {
 
-    Map newMap;
-    QSignalSpy spy(&newMap, SIGNAL(rowsInserted(QModelIndex,int,int)));
+    Solids newSolids;
+    QSignalSpy spy(&newSolids, SIGNAL(rowsInserted(QModelIndex,int,int)));
 
     Plane *plane;
     QList<Plane*> planes;
@@ -42,7 +42,7 @@ void MapTests::testInsertBrush() {
     planes.prepend(plane = new Plane(QVector3D(128, 32, 128),QVector3D(-128, 32, 128),QVector3D(-128, 32, 0)));
     planes.prepend(plane = new Plane(QVector3D(128, 0, 0),QVector3D(-128, 0, 0),QVector3D(-128, 0, 128)));
     Brush brush(planes);
-    newMap.addBrush(brush);
+    newSolids.addSolid(brush);
 
     QCOMPARE(spy.count(), 1); // make sure the signal was emitted exactly one time
 }
@@ -52,7 +52,7 @@ void MapTests::testInsertBrush() {
 //!
 void MapTests::testReturnBrush() {
 
-    Map newMap;
+    Solids newSolids;
     Plane *plane;
     QList<Plane*> planes;
     planes.prepend(plane = new Plane(QVector3D(-128, 32, 128),QVector3D(128, 32, 128),QVector3D(128, 0, 128)));
@@ -62,16 +62,15 @@ void MapTests::testReturnBrush() {
     planes.prepend(plane = new Plane(QVector3D(128, 32, 128),QVector3D(-128, 32, 128),QVector3D(-128, 32, 0)));
     planes.prepend(plane = new Plane(QVector3D(128, 0, 0),QVector3D(-128, 0, 0),QVector3D(-128, 0, 128)));
     Brush brush(planes);
-    newMap.addBrush(brush);
+    newSolids.addSolid(brush);
 
-    QVariant output = newMap.index(0,0).data(Map::BrushRole);
+    QVariant output = newSolids.index(0,0).data(Solids::BrushRole);
     Brush s2 = output.value<Brush>();
     QCOMPARE(s2.getCenter(X_AXIS, Y_AXIS), QVector2D(0,16));
 
 }
 
 void MapTests::testReadVMF() {
-
     Map map;
     map.readVMF(":/vmfs/testBox.vmf");
 

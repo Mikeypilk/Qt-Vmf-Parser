@@ -17,17 +17,15 @@ along with World Editor.  If not, see <http://www.gnu.org/licenses/>.
 
 #ifndef MAP_H
 #define MAP_H
-#include <QAbstractItemModel>
 #include <QObject>
 #include "brush.h"
-//!
-//! \brief The Map class is the model that holds all the data for a map
-//!
-class Map : public QAbstractItemModel
-{
-    Q_OBJECT
-    QList<Brush> m_brushes; //! The Brushes defining the 3D blocks in the game world
+#include "solids.h"
 
+class Map : public QObject {
+
+    Q_OBJECT
+
+    //! versioninfo{}
     struct {
         int editorVersion;  //! The version of Hammer used to create the file.
         int editorBuild;    //! The patch number of Hammer the file was generated with.
@@ -36,34 +34,41 @@ class Map : public QAbstractItemModel
         int prefab;         //! a full map or simply a collection of prefabs.
     } m_versionInfo;
 
+    //! visgroups{}
+
+    //! viewsettings{}
     struct {
         bool bSnapToGrid;   //! Whether the map has the grid snapping feature enabled.
         bool bShowGrid;     //! Whether the map is showing the 2D grid.
         bool ShowLogicalGrid; //! Changes whether the hidden "Logical View" should show a grid
         int nGridSpacing;   //! The value the grid lines are spaced at.
         bool bShow3DGrid;   //! Whether the map is showing the 3D grid.
-    } m_editorSettings;
+    } m_viewSettings;
+
+    //! world{}
+    Solids m_solids; //! This is a model that holds the blocks
+
+    //!    entity{}
+    //!    hidden{}
+
+    //!    cameras{}
+    int m_activecamera;     //! Sets the currently active camera used for the Hammer 3D View.
+    //! When no cameras are present in the .VMF, this value is set to -1
+    //! and the camera position defaults to the world origin, facing North.
+    struct s_cameras {
+        QVector3D position; //! The eye position of the camera in the map.
+        QVector3D look; //! The position of the camera target -- the point the camera is looking toward.
+    };
+
+    //!    cordon{}
 
     void parseGenericStruct(QTextStream *txt, QStringList *genericStruct);
+    void parseWorld(QTextStream *txt);
     bool populateVersionInfo(QStringList *genericList);
-    bool populateEditorSetting(QStringList *genericList);
+    bool populateViewSettings(QStringList *genericList);
 
 public:
-    enum MapRoles {
-        BrushRole = Qt::UserRole + 1,
-    };
-    QModelIndex *SOLIDS;
-
-    Map(QObject *parent = 0);
-    QModelIndex index(int row, int column, const QModelIndex & parent = QModelIndex()) const;
-    QModelIndex parent(const QModelIndex &index) const;
-    int columnCount(const QModelIndex &parent = QModelIndex()) const;
-    int rowCount(const QModelIndex &parent = QModelIndex()) const;
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
-    void addBrush(const Brush &newBrush);
     bool readVMF(const QString &filename);
-
-
 };
 
 #endif // MAP_H
