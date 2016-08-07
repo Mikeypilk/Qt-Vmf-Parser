@@ -70,11 +70,31 @@ void MapTests::testReturnBrush() {
 
 }
 
-void MapTests::testReadVMF() {
+void MapTests::testReadVMFSolid() {
+    Map map;
+    map.readVMF(":/vmfs/testBox.vmf");
+    QVariant output = map.m_solids.index(0,0).data(Solids::BrushRole);
+    Brush s2 = output.value<Brush>();
+    QCOMPARE(s2.getCenter(X_AXIS, Y_AXIS), QVector2D(0,16));
+}
+
+void MapTests::testReadVMFVersionInfo() {
+    Map map;
+    map.readVMF(":/vmfs/testBox.vmf");
+    QCOMPARE(map.m_versionInfo.editorVersion, 400);
+    QCOMPARE(map.m_versionInfo.editorBuild, 7152);
+    QCOMPARE(map.m_versionInfo.mapVersion, 1);
+    QCOMPARE(map.m_versionInfo.formatVersion, 100);
+    QCOMPARE(map.m_versionInfo.prefab, 0);
+}
+
+void MapTests::testReadVMFViewSettings() {
     Map map;
     map.readVMF(":/vmfs/testBox.vmf");
 
-
-
-
+    QCOMPARE(map.m_viewSettings.bSnapToGrid, true);
+    QCOMPARE(map.m_viewSettings.bShowGrid, true);
+    QCOMPARE(map.m_viewSettings.ShowLogicalGrid, false);
+    QCOMPARE(map.m_viewSettings.nGridSpacing, 32);
+    QCOMPARE(map.m_viewSettings.bShow3DGrid, false);
 }

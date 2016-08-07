@@ -30,7 +30,9 @@ private slots:
   void init();
   void testInsertBrush();
   void testReturnBrush();
-  void testReadVMF();
+  void testReadVMFSolid();
+  void testReadVMFViewSettings();
+  void testReadVMFVersionInfo();
 
 };
 

@@ -182,7 +182,6 @@ void ViewPortScene::setGrid(bool step) {
 //! \param brush
 //!
 void ViewPortScene::addBrush(QModelIndex index, int first, int last) {
-    qDebug() << "add brush";
     QVariant tmp = m_map->index(first,0,index).data(Solids::BrushRole);
     Brush brush = tmp.value<Brush>();
     QList<QPolygonF> polygons = brush.polygonise(m_primary, m_secondary);

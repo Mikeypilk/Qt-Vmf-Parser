@@ -34,7 +34,6 @@ void Map::parseGenericStruct(QTextStream *txt, QStringList *genericStruct)
     QString line;
     bool open = false;
     while (txt->readLineInto(&line)) {
-        qDebug() << line;
         if(line.contains("{")) {
             open = true;
             continue;
@@ -53,12 +52,17 @@ void Map::parseGenericStruct(QTextStream *txt, QStringList *genericStruct)
     }
 }
 
-void Map::parseWorld(QTextStream *txt) {
+bool Map::parseWorld(QTextStream *txt) {
     QStringList worldSettings;
     QString line;
+    QList<Plane*> planes;
     bool open = false;
+
+MASTER:
+
     while (txt->readLineInto(&line)) {
         if(line.remove("\t") == "solid") {
+            planes.clear();
             goto SOLID;
         }
         if(line.contains("{")) {
@@ -70,27 +74,80 @@ void Map::parseWorld(QTextStream *txt) {
         }
         if(open) {
             worldSettings.append(line.remove("\t").remove(" ")
-                                  .split(QRegularExpression("\""),
-                                         QString::SkipEmptyParts));
+                                 .split(QRegularExpression("\""),
+                                        QString::SkipEmptyParts));
         }
         else {
-            return;
+            return 0;
         }
     }
-
 SOLID:
-//    solid
-//	{
-//		"id" "2"
-//		side
-//		{
-//			"id" "1"
-//			"plane" "(-128 32 128) (128 32 128) (128 0 128)"
-//    QList<Plane*> planes;
-//    while (txt->readLineInto(&line)) {
-//        if(line == side)
-//    }
-    return;
+    while (txt->readLineInto(&line)) {
+        if(line.remove("\t") == "side") {
+            goto SIDE;
+        }
+        if(line.contains("{")) {
+            open = true;
+            continue;
+        }
+        if(line.contains("}")) {
+            open = false;
+        }
+        if(open) {
+//            qDebug() << "id = " << line;
+        }
+        else {
+            Brush b(planes);
+            m_solids.addSolid(b);
+            goto MASTER;
+        }
+    }
+SIDE:
+    while (txt->readLineInto(&line)) {
+        if(line.contains("{")) {
+            open = true;
+            continue;
+        }
+        if(line.contains("}")) {
+            open = false;
+        }
+        if(open) {
+            QStringList list;
+            list.append(line.remove("\t").split(QRegularExpression("\""),
+                                                QString::SkipEmptyParts));
+            list.removeAll(" ");
+            if(list.at(0) == "plane") {
+                QString splane = list.at(1);
+                QStringList vertexes;
+                vertexes.append(splane.remove("(").remove(")").split(" "));
+                if(vertexes.size() == 9) {
+                    bool ok;
+                    Plane *p = new Plane(QVector3D(QString(vertexes.at(0)).toInt(&ok),
+                                      QString(vertexes.at(1)).toInt(&ok),
+                                      QString(vertexes.at(2)).toInt(&ok)),
+                            QVector3D(QString(vertexes.at(3)).toInt(&ok),
+                                      QString(vertexes.at(4)).toInt(&ok),
+                                      QString(vertexes.at(5)).toInt(&ok)),
+                            QVector3D(QString(vertexes.at(6)).toInt(&ok),
+                                      QString(vertexes.at(7)).toInt(&ok),
+                                      QString(vertexes.at(8)).toInt(&ok)));
+                    planes.append(p);
+                    if(!ok) {
+                        qWarning("Invalid .vmf: Vertex in plane not int");
+                        return 1;
+                    }
+                }
+                else {
+                    qWarning("Invalid .vmf: Incorrect number of points defining a plane");
+                    return 1;
+                }
+            }
+
+        }
+        else {
+            goto SOLID;
+        }
+    }
 }
 
 //!
@@ -114,6 +171,8 @@ MASTER:
                 goto VISGROUPS;
             if(line == "viewsettings")
                 goto VIEWSETTINGS;
+            if(line == "world")
+                goto WORLD;
             return 0;
         }
 
@@ -145,6 +204,10 @@ VIEWSETTINGS:
             qDebug() << &list;
             return 1;
         }
+
+WORLD:
+        parseWorld(&txt);
+
     }
 }
 
@@ -162,7 +225,7 @@ bool Map::populateVersionInfo(QStringList *genericList) {
         return 1;
 }
 
-bool Map::populateEditorSetting(QStringList *genericList) {
+bool Map::populateViewSettings(QStringList *genericList) {
     bool ok;
     m_viewSettings.bSnapToGrid = QString(genericList->at(genericList->indexOf(QRegularExpression("bSnapToGrid")) + 1)).toInt(&ok);
     m_viewSettings.bShowGrid = QString(genericList->at(genericList->indexOf(QRegularExpression("bShowGrid")) + 1)).toInt(&ok);

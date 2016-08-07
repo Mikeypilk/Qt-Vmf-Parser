@@ -25,6 +25,13 @@ class Map : public QObject {
 
     Q_OBJECT
 
+    void parseGenericStruct(QTextStream *txt, QStringList *genericStruct);
+    bool parseWorld(QTextStream *txt);
+    bool populateVersionInfo(QStringList *genericList);
+    bool populateViewSettings(QStringList *genericList);
+
+public:
+    bool readVMF(const QString &filename);
     //! versioninfo{}
     struct {
         int editorVersion;  //! The version of Hammer used to create the file.
@@ -62,13 +69,6 @@ class Map : public QObject {
 
     //!    cordon{}
 
-    void parseGenericStruct(QTextStream *txt, QStringList *genericStruct);
-    void parseWorld(QTextStream *txt);
-    bool populateVersionInfo(QStringList *genericList);
-    bool populateViewSettings(QStringList *genericList);
-
-public:
-    bool readVMF(const QString &filename);
 };
 
 #endif // MAP_H
