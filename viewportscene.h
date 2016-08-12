@@ -52,12 +52,12 @@ private:
     axis m_secondary;
     QPoint m_pressPoint;
     QGraphicsRectItem m_newTempBlock;
-    Solids *m_map;
+    Map *m_map;
     QGraphicsItemGroup brushes;
     MOUSE_INTERACT_MODE m_mouseMode;
 
 public:
-    ViewPortScene(Solids *map, axis primary, axis secondary);
+    ViewPortScene(Map *map, axis primary, axis secondary);
     void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);

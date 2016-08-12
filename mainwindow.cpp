@@ -17,6 +17,7 @@ along with World Editor.  If not, see <http://www.gnu.org/licenses/>.
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <qlabel.h>
+#include <QFileDialog>
 
 #define GRID_INCREMENT 0
 #define GRID_DECREMENT 1
@@ -31,10 +32,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-
     this->setWindowTitle("World Editor");
     QLabel *label = new QLabel("Status Bar: ");
-
     ui->statusBar->addWidget(label);
 
     for(int i = 0; i < 3; i++) {
@@ -66,11 +65,11 @@ MainWindow::MainWindow(QWidget *parent) :
         //view
         view->setScene(scene);
         view->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-        view->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+        view->setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
         view->setOptimizationFlag(QGraphicsView::DontAdjustForAntialiasing, true);
 
         // model signals
-        connect(&model, SIGNAL(rowsInserted(QModelIndex,int,int)),
+        connect(&model.m_solids, SIGNAL(rowsInserted(QModelIndex,int,int)),
                 scene, SLOT(addBrush(QModelIndex,int,int)));
         connect(view, SIGNAL(scaleChanged(qreal)),scene,SLOT(setScale(qreal)));
         connect(this, SIGNAL(changeGrid(bool)),scene,SLOT(setGrid(bool)));
@@ -93,7 +92,7 @@ MainWindow::MainWindow(QWidget *parent) :
     planes.prepend(plane = new Plane(QVector3D(-32,-64,0),QVector3D(-64,-32,0),QVector3D(-64,-32,64)));
     planes.prepend(plane = new Plane(QVector3D(-64,32,0),QVector3D(-32,64,0),QVector3D(-32,64,64)));
     Brush brush(planes);
-    model.addSolid(brush);
+    model.m_solids.addSolid(brush);
 }
 //!
 //! \brief MainWindow::~MainWindow
@@ -135,4 +134,15 @@ void MainWindow::on_actionNewBlock_triggered()
 void MainWindow::on_actionSelect_triggered()
 {
     emit(changeViewPortMode(SELECT));
+}
+//!
+//! \brief MainWindow::on_actionOpen_triggered
+//!
+void MainWindow::on_actionOpen_triggered()
+{
+    QString fileName = QFileDialog::getOpenFileName(this,
+        tr("Open Map)"), ":/vmfs/", tr("Valve Map Files (*.vmf)"));
+
+    model.readVMF(fileName);
+
 }

@@ -51,19 +51,30 @@ void Map::parseGenericStruct(QTextStream *txt, QStringList *genericStruct)
         }
     }
 }
-
+//!
+//! \brief Map::parseWorld parses the world section of the vmf file
+//! \param txt
+//! \return
+//!
 bool Map::parseWorld(QTextStream *txt) {
     QStringList worldSettings;
     QString line;
     QList<Plane*> planes;
     bool open = false;
 
-MASTER:
 
+    qDebug() << "WORLD : MASTER";
     while (txt->readLineInto(&line)) {
+
+MASTER:
+        qDebug() << line;
         if(line.remove("\t") == "solid") {
             planes.clear();
             goto SOLID;
+        }
+        if(line.remove("\t") == "editor") {
+            planes.clear();
+            goto EDITOR;
         }
         if(line.contains("{")) {
             open = true;
@@ -82,6 +93,7 @@ MASTER:
         }
     }
 SOLID:
+    qDebug() << "WORLD : SOLID";
     while (txt->readLineInto(&line)) {
         if(line.remove("\t") == "side") {
             goto SIDE;
@@ -94,7 +106,7 @@ SOLID:
             open = false;
         }
         if(open) {
-//            qDebug() << "id = " << line;
+            qDebug() << "id = " << line;
         }
         else {
             Brush b(planes);
@@ -103,6 +115,7 @@ SOLID:
         }
     }
 SIDE:
+    qDebug() << "WORLD : SIDE";
     while (txt->readLineInto(&line)) {
         if(line.contains("{")) {
             open = true;
@@ -116,6 +129,7 @@ SIDE:
             list.append(line.remove("\t").split(QRegularExpression("\""),
                                                 QString::SkipEmptyParts));
             list.removeAll(" ");
+
             if(list.at(0) == "plane") {
                 QString splane = list.at(1);
                 QStringList vertexes;
@@ -146,6 +160,25 @@ SIDE:
         }
         else {
             goto SOLID;
+        }
+    }
+
+EDITOR:
+    qDebug() << "WORLD : EDITOR";
+    while (txt->readLineInto(&line)) {
+        if(line.contains("{")) {
+            open = true;
+            continue;
+        }
+        if(line.contains("}")) {
+            open = false;
+            continue;
+        }
+        if(open) {
+            qDebug() << "EDITOR LINE :  " << line;
+        }
+        else {
+            goto MASTER;
         }
     }
 }

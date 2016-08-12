@@ -40,7 +40,7 @@ public:
     ViewPortScene *m_scene_1;
     ViewPortScene *m_scene_2;
     ViewPortScene *m_scene_3;
-    Solids model;
+    Map model;
 
 signals:
     void changeGrid(bool);
@@ -53,6 +53,8 @@ private slots:
     void on_actionInstantiateBlock_triggered();
     void on_actionNewBlock_triggered();
     void on_actionSelect_triggered();
+
+    void on_actionOpen_triggered();
 
 private:
     Ui::MainWindow *ui;

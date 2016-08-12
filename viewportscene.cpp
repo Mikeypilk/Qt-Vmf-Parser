@@ -27,12 +27,12 @@ along with World Editor.  If not, see <http://www.gnu.org/licenses/>.
 //! \param primary
 //! \param secondary
 //!
-ViewPortScene::ViewPortScene(Solids *solids, axis primary, axis secondary)
+ViewPortScene::ViewPortScene(Map *map, axis primary, axis secondary)
 {
 
     m_primary = primary;
     m_secondary = secondary;
-    m_map = solids;
+    m_map = map;
 
     m_scale = 8;
     m_grid = 1;
@@ -182,13 +182,10 @@ void ViewPortScene::setGrid(bool step) {
 //! \param brush
 //!
 void ViewPortScene::addBrush(QModelIndex index, int first, int last) {
-    QVariant tmp = m_map->index(first,0,index).data(Solids::BrushRole);
+    QVariant tmp = m_map->m_solids.index(first,0,index).data(Solids::BrushRole);
     Brush brush = tmp.value<Brush>();
     QList<QPolygonF> polygons = brush.polygonise(m_primary, m_secondary);
 
-    if (m_secondary == Z_AXIS) {
-        qDebug() << polygons;
-    }
     QVector<QPointF> list;
     foreach(QPolygonF poly, polygons) {
         for(int j=0; j<poly.size(); j++) {
