@@ -1,2 +1,2 @@
-# WorldEditor
-A 3D World Editor made with Qt
+# Vmf parser
+A hammer editor clone that can parse and display a vmf file, unefficiently :)
